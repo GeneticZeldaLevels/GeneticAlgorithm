@@ -3,7 +3,15 @@ package simpleGa;
 public class GA {
 
     public static void main(String[] args) {
-
+    	Individual ind = new Individual();
+    	ind.generateIndividual();
+    	
+    	String chrome = ind.toString();
+    	GraphIndividual frame = new GraphIndividual(chrome);
+    	frame.runGraphic();
+    	
+    	
+    	/*
         // Set a candidate solution
         FitnessCalc.setSolution("1111000000000000000000000000000000000000000000000000000000001111");
 
@@ -21,6 +29,6 @@ public class GA {
         System.out.println("Generation: " + generationCount);
         System.out.println("Genes:");
         System.out.println(myPop.getFittest());
-
+    	 */
     }
 }
