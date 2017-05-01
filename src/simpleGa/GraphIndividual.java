@@ -36,37 +36,31 @@ public class GraphIndividual extends JFrame {
         });
     }
     
-    public byte binaryStringToByte( String binary ){
-    	byte number = 0, base = 16;
-    	for( int i = 0; i <= binary.length()-1; i++ ){
-    		if( binary.charAt(i) == '1' ) number += base;
-    		base /= 2;
-    	}
-    	return number;
-    }
-    
     public void evalChromosome(){
     	String gene;
     	for( int i = 0; i < chromosome.length(); i += 20 ){
     		 gene = chromosome.substring( i, i+20 );
     		 if( gene.charAt(0) == '0' && gene.charAt(1) == '0' ){
-    			 byte x = binaryStringToByte( gene.substring( 2, 7 ) );
-    			 byte y = binaryStringToByte( gene.substring( 7, 12 ));
-    			 byte length = binaryStringToByte( "0" + gene.substring( 12, 16 ) );
+    			 /*byte x = FitnessCalc.binaryStringToByte( gene.substring( 2, 7 ) );
+    			 byte y = FitnessCalc.binaryStringToByte( gene.substring( 7, 12 ));
+    			 byte length = FitnessCalc.binaryStringToByte( "0" + gene.substring( 12, 16 ) );
     			 byte direction = (byte) (( gene.charAt(16) == '1' )? 1: 0);
-    			 halls.add( new Hallway( x, y, length, direction ) );
+    			 halls.add( new Hallway( x, y, length, direction ) );*/
+    			 halls.add( FitnessCalc.geneToHallway(gene) );
     			 //System.out.println("hallway - "+ x +" - "+y+" - "+length+" - "+direction);
     		 }else if( gene.charAt(0) == '0' && gene.charAt(1) == '1' ){
-    			 byte x = binaryStringToByte( gene.substring( 2, 7 ) );
-    			 byte y = binaryStringToByte( gene.substring( 7, 12 ));
-    			 byte width = binaryStringToByte( "0"+gene.substring( 12, 16 ));
-    			 byte breadth = binaryStringToByte( "0"+gene.substring( 16, 20 ));
-    			 rooms.add(new Room( x, y, width, breadth ));
+    			 /*byte x = FitnessCalc.binaryStringToByte( gene.substring( 2, 7 ) );
+    			 byte y = FitnessCalc.binaryStringToByte( gene.substring( 7, 12 ));
+    			 byte width = FitnessCalc.binaryStringToByte( "0"+gene.substring( 12, 16 ));
+    			 byte breadth = FitnessCalc.binaryStringToByte( "0"+gene.substring( 16, 20 ));
+    			 rooms.add(new Room( x, y, width, breadth ));*/
+    			 rooms.add( FitnessCalc.geneToRoom(gene) );
     			 //System.out.println("room - "+ x +" - "+y+" - "+width+" - "+breadth);
     		 }else if( gene.charAt(0) == '1' && gene.charAt(1) == '0' ){
-    			 byte x = binaryStringToByte( gene.substring( 2, 7 ) );
-    			 byte y = binaryStringToByte( gene.substring( 7, 12 ));
-    			 monsters.add( new Monster( x, y ));
+    			 /*byte x = FitnessCalc.binaryStringToByte( gene.substring( 2, 7 ) );
+    			 byte y = FitnessCalc.binaryStringToByte( gene.substring( 7, 12 ));
+    			 monsters.add( new Monster( x, y ));*/
+    			 monsters.add( FitnessCalc.geneToMonster(gene) );
     			 //System.out.println("monster - "+ x +" - "+y);
     		 }
     	}

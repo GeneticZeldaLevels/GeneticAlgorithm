@@ -62,6 +62,10 @@ public class Individual {
         }
         return fitness;
     }
+    
+    public int getAllElementsIn(){
+    	return FitnessCalc.getAllElementsIn(this);
+    }
 
     @Override
     public String toString() {

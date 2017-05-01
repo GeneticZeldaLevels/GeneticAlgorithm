@@ -4,11 +4,20 @@ public class GA {
 
     public static void main(String[] args) {
     	//Crea un individuo (cromosoma) aleatorio de 20 elementos 
-    	Individual ind = new Individual();
-    	ind.generateIndividual();
-    	
+    	Individual ind;
+    	int cont = 0;
+    	while(true){
+    		ind = new Individual();
+    		ind.generateIndividual();
+    		cont++;
+    		if( ind.getAllElementsIn() == 0 )
+    			break;
+    	}
+    	System.out.println(cont);
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
+    	
+    	//System.out.println( ind.getAllElementsIn() );
     	
     	//Se grafica el cromosoma
     	GraphIndividual frame = new GraphIndividual(chrome);
