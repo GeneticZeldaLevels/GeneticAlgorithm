@@ -17,6 +17,8 @@ public class GraphIndividual extends JFrame {
 	private ArrayList<Hallway> halls;
 	private ArrayList<Room> rooms;
 	private ArrayList<Monster> monsters;
+	private int cellSize;
+	
     /**
      * Launch the application.
      */
@@ -35,7 +37,7 @@ public class GraphIndividual extends JFrame {
     }
     
     public byte binaryStringToByte( String binary ){
-    	byte number = 0, base = 64;
+    	byte number = 0, base = 16;
     	for( int i = 0; i <= binary.length()-1; i++ ){
     		if( binary.charAt(i) == '1' ) number += base;
     		base /= 2;
@@ -45,23 +47,23 @@ public class GraphIndividual extends JFrame {
     
     public void evalChromosome(){
     	String gene;
-    	for( int i = 0; i < chromosome.length(); i += 24 ){
-    		 gene = chromosome.substring( i, i+24 );
+    	for( int i = 0; i < chromosome.length(); i += 18 ){
+    		 gene = chromosome.substring( i, i+18 );
     		 if( gene.charAt(0) == '0' && gene.charAt(1) == '0' ){
-    			 byte x = binaryStringToByte( gene.substring( 2, 9 ) );
-    			 byte y = binaryStringToByte( gene.substring( 9, 16 ));
-    			 byte length = binaryStringToByte( "000" + gene.substring( 16, 20 ) );
-    			 byte direction = (byte) (( gene.charAt(20) == '1' )? 1: 0);
+    			 byte x = binaryStringToByte( gene.substring( 2, 7 ) );
+    			 byte y = binaryStringToByte( gene.substring( 7, 12 ));
+    			 byte length = binaryStringToByte( "00" + gene.substring( 12, 15 ) );
+    			 byte direction = (byte) (( gene.charAt(15) == '1' )? 1: 0);
     			 halls.add( new Hallway( x, y, length, direction ) );
     		 }else if( gene.charAt(0) == '0' && gene.charAt(1) == '1' ){
-    			 byte x = binaryStringToByte( gene.substring( 2, 9 ) );
-    			 byte y = binaryStringToByte( gene.substring( 9, 16 ));
-    			 byte width = binaryStringToByte( "000"+gene.substring( 16, 20 ));
-    			 byte breadth = binaryStringToByte( "000"+gene.substring( 20, 24 ));
+    			 byte x = binaryStringToByte( gene.substring( 2, 7 ) );
+    			 byte y = binaryStringToByte( gene.substring( 7, 12 ));
+    			 byte width = binaryStringToByte( "000"+gene.substring( 12, 15 ));
+    			 byte breadth = binaryStringToByte( "000"+gene.substring( 15, 18 ));
     			 rooms.add(new Room( x, y, width, breadth ));
     		 }else if( gene.charAt(0) == '1' && gene.charAt(1) == '0' ){
-    			 byte x = binaryStringToByte( gene.substring( 2, 9 ) );
-    			 byte y = binaryStringToByte( gene.substring( 9, 16 ));
+    			 byte x = binaryStringToByte( gene.substring( 2, 7 ) );
+    			 byte y = binaryStringToByte( gene.substring( 7, 12 ));
     			 monsters.add( new Monster( x, y ));
     		 }
     	}
@@ -72,6 +74,7 @@ public class GraphIndividual extends JFrame {
      */
     public GraphIndividual( String chrome ) {
     	this.chromosome = chrome;
+    	this.cellSize = 17;
     	halls = new ArrayList<Hallway>();
     	rooms = new ArrayList<Room>();
     	monsters = new ArrayList<Monster>();
@@ -81,19 +84,19 @@ public class GraphIndividual extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
-        setBounds(0,0,640,640);
+        setBounds(0,0,700,700);
     }
     
     public void paint (Graphics g)
     {
         super.paint(g);
 
-        for( int i = 1; i <= 128; i++ ){
-        	for( int j = 1; j <= 128; j++ ){
+        for( int i = 1; i <= 32; i++ ){
+        	for( int j = 1; j <= 32; j++ ){
         		g.setColor (Color.black);
-        		g.fillRect ((i*5)+50, (j*5)+50, 5, 5);
+        		g.fillRect ((i*this.cellSize)+50, (j*this.cellSize)+50, this.cellSize, this.cellSize);
         		g.setColor (Color.white);
-        		g.drawRect ((i*5)+50, (j*5)+50, 5, 5);
+        		g.drawRect ((i*this.cellSize)+50, (j*this.cellSize)+50, this.cellSize, this.cellSize);
         	}
         }
         
@@ -104,13 +107,13 @@ public class GraphIndividual extends JFrame {
         		init_x -= (byte)(halls.get(i).getLength()/2);
         		int end_x = init_x + halls.get(i).getLength();
         		for( int j = init_x; j <= end_x; j++ ){
-        			g.fillRect ( j*5+50, init_x*5+50, 5, 5);
+        			g.fillRect ( j*this.cellSize+50, init_x*this.cellSize+50, this.cellSize, this.cellSize);
         		}
         	}else if( halls.get(i).getDirection() == 1 ){
         		init_y -= (byte)(halls.get(i).getLength()/2);
         		int end_y = init_y + halls.get(i).getLength();
         		for( int j = init_y; j <= end_y; j++ ){
-        			g.fillRect ( init_y*5+50, j*5+50, 5, 5);
+        			g.fillRect ( init_y*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
         		}
         	}
         }
@@ -121,14 +124,14 @@ public class GraphIndividual extends JFrame {
         	int end_x = init_x + rooms.get(i).getWidth(), end_y = init_y + rooms.get(i).getBreadth();
         	for( int j = init_x ; j <= end_x; j++ ){
         		for( int k = init_y; k <= end_y; k++ ){
-        			g.fillRect ( j*5+50, k*5+50, 5, 5);
+        			g.fillRect ( j*this.cellSize+50, k*this.cellSize+50, this.cellSize, this.cellSize);
         		}
         	}
         }
         
         g.setColor(Color.blue);
         for( int i = 0; i < monsters.size(); i++ ){
-        	g.fillRect ( monsters.get(i).getX()*5+50, monsters.get(i).getY()*5+50, 5, 5);
+        	g.fillRect ( monsters.get(i).getX()*this.cellSize+50, monsters.get(i).getY()*this.cellSize+50, this.cellSize, this.cellSize);
         }
     }
 }

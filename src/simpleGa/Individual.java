@@ -2,7 +2,7 @@ package simpleGa;
 
 public class Individual {
 
-    static int defaultChromosomeLength = 480;
+    static int defaultChromosomeLength = 180;
     private byte[] chromosome = new byte[defaultChromosomeLength];
     // Cache
     private int fitness = 0;
@@ -14,7 +14,7 @@ public class Individual {
     	Monster m;
     	byte[] coded;
     	int chromosomeCnt = 0;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             byte gene = (byte) ( (Math.random() * 100) % 3 );
             if( gene == 0 ){
             	h = new Hallway();

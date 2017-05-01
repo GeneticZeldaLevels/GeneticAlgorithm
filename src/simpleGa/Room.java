@@ -12,18 +12,18 @@ public class Room {
 	
 	//Constructor que genera elementos aleatorios
 	public Room(){
-		this.x = (byte) ( ( Math.random() * 1000 ) % 128 );
-		this.y = (byte) ( ( Math.random() * 1000 ) % 128 );
-		this.width = (byte) ( ( Math.random() * 100 ) % 16);
-		this.breadth = (byte) ( ( Math.random() * 100 ) % 16);
-		if( this.width % 2 != 0){
+		this.x = (byte) ( ( Math.random() * 1000 ) % 32 );
+		this.y = (byte) ( ( Math.random() * 1000 ) % 32 );
+		this.width = (byte) ( ( Math.random() * 100 ) % 8);
+		this.breadth = (byte) ( ( Math.random() * 100 ) % 8);
+		/*if( this.width % 2 != 0){
 			if( this.width > 7 ) this.width--;
 			else this.width++;
 		}
 		if( this.breadth % 2 != 0){
 			if( this.breadth > 7 ) this.breadth--;
 			else this.breadth++;
-		}
+		}*/
 	}
 	
 	//Constructor que recibe paremetros
@@ -32,21 +32,21 @@ public class Room {
 		this.y = y;
 		this.width = width;
 		this.breadth = breadth;
-		if( this.width % 2 != 0){
+		/*if( this.width % 2 != 0){
 			if( this.width > 7 ) this.width--;
 			else this.width++;
 		}
 		if( this.breadth % 2 != 0){
 			if( this.breadth > 7 ) this.breadth--;
 			else this.breadth++;
-		}
+		}*/
 	}
 	
 	//Función para convertir numeros decimales en binarios
 	public byte[] toBinary( byte number ){
-		byte[] binary = new byte[7];
-		byte base = 64;
-		for( int i = 6; i >= 0; i-- ){
+		byte[] binary = new byte[5];
+		byte base = 16;
+		for( int i = 4; i >= 0; i-- ){
 			if( number >= base ){
 				binary[i] = 1;
 				number -= base;
@@ -59,7 +59,7 @@ public class Room {
 	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeGene(){
-		byte[] gene = new byte[24], a;
+		byte[] gene = new byte[18], a;
 		gene[0] = 0; gene[1] = 1;
 		byte geneCnt = 2;
 		
@@ -72,11 +72,11 @@ public class Room {
         	gene[geneCnt] = a[i];
         
         a = toBinary(this.width);
-        for( int i = 3; i >= 0; i--, geneCnt++ )
+        for( int i = 2; i >= 0; i--, geneCnt++ )
         	gene[geneCnt] = a[i];
         
         a = toBinary(this.breadth);
-        for( int i = 3; i >= 0; i--, geneCnt++ )
+        for( int i = 2; i >= 0; i--, geneCnt++ )
         	gene[geneCnt] = a[i];
         
 		return gene;

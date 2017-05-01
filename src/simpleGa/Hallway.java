@@ -12,9 +12,9 @@ public class Hallway {
 	
 	//Constructor que genera elementos aleatorios
 	public Hallway(){
-		this.x = (byte) ( ( Math.random() * 1000 ) % 128 );
-		this.y = (byte) ( ( Math.random() * 1000 ) % 128 );
-		this.length = (byte) ( ( Math.random() * 100 ) % 16);
+		this.x = (byte) ( ( Math.random() * 1000 ) % 32 );
+		this.y = (byte) ( ( Math.random() * 1000 ) % 32 );
+		this.length = (byte) ( ( Math.random() * 100 ) % 8);
 		this.direction = (byte) Math.round(Math.random());
 		if( this.length % 2 != 0){
 			if( this.length > 7 ) this.length--;
@@ -36,9 +36,9 @@ public class Hallway {
 	
 	//Función para convertir numeros decimales en binarios
 	public byte[] toBinary( byte number ){
-		byte[] binary = new byte[7];
-		byte base = 64;
-		for( int i = 6; i >= 0; i-- ){
+		byte[] binary = new byte[5];
+		byte base = 16;
+		for( int i = 4; i >= 0; i-- ){
 			if( number >= base ){
 				binary[i] = 1;
 				number -= base;
@@ -51,7 +51,7 @@ public class Hallway {
 	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeGene(){
-		byte[] gene = new byte[24], a;
+		byte[] gene = new byte[18], a;
 		gene[0] = gene[1] = 0;
 		byte geneCnt = 2;
 		
@@ -64,13 +64,13 @@ public class Hallway {
         	gene[geneCnt] = a[i];
         
         a = toBinary(this.length);
-        for( int i = 3; i >= 0; i--, geneCnt++ )
+        for( int i = 2; i >= 0; i--, geneCnt++ )
         	gene[geneCnt] = a[i];
         
         gene[geneCnt] = this.direction;
         geneCnt++;
 
-        for( ; geneCnt < 24; geneCnt++)
+        for( ; geneCnt < 18; geneCnt++)
         	gene[geneCnt] = 0;
         
         
