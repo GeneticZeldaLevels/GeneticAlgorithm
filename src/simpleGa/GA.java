@@ -7,10 +7,6 @@ public class GA {
     	Individual ind = new Individual();
     	ind.generateIndividual();
     	
-    	/*Population myPop = new Population(3000, true);
-    	*/
-    	
-    	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
     	

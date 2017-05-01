@@ -2,7 +2,7 @@ package simpleGa;
 
 public class Individual {
 
-    static int defaultChromosomeLength = 180;
+    static int defaultChromosomeLength = 400;
     private byte[] chromosome = new byte[defaultChromosomeLength];
     // Cache
     private int fitness = 0;
@@ -14,30 +14,25 @@ public class Individual {
     	Monster m;
     	byte[] coded;
     	int chromosomeCnt = 0;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             byte gene = (byte) ( (Math.random() * 100) % 3 );
             if( gene == 0 ){
             	h = new Hallway();
             	coded = h.codeGene();
-            	for( int j = 0; j < coded.length; j++ ){
-            		chromosome[chromosomeCnt] = coded[j];
-            		chromosomeCnt++;
-            	}
+            	//System.out.println("hallway - "+ h.getX() +" - "+h.getY()+" - "+h.getLength()+" - "+h.getDirection());
             }else if( gene == 1 ){
             	r = new Room();
             	coded = r.codeGene();
-            	for( int j = 0; j < coded.length; j++ ){
-            		chromosome[chromosomeCnt] = coded[j];
-            		chromosomeCnt++;
-            	}
+            	//System.out.println("room - "+ r.getX() +" - "+ r.getY() +" - "+r.getWidth()+" - "+ r.getBreadth() );
             }else{
             	m = new Monster();
             	coded = m.codeGene();
-            	for( int j = 0; j < coded.length; j++ ){
-            		chromosome[chromosomeCnt] = coded[j];
-            		chromosomeCnt++;
-            	}
+            	//System.out.println("monster - "+ m.getX() +" - "+m.getY());
             }
+            for( int j = 0; j < coded.length; j++ ){
+        		chromosome[chromosomeCnt] = coded[j];
+        		chromosomeCnt++;
+        	}
         }
     }
 

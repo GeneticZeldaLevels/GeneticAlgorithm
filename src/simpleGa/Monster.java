@@ -34,7 +34,7 @@ public class Monster {
 	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeGene(){
-		byte[] gene = new byte[18], a;
+		byte[] gene = new byte[20], a;
 		gene[0] = 1; gene[1] = 0;
 		byte geneCnt = 2;
 		
@@ -47,7 +47,7 @@ public class Monster {
         	gene[geneCnt] = a[i];
         
         geneCnt++;
-        for( ; geneCnt < 18; geneCnt++ )
+        for( ; geneCnt < 20; geneCnt++ )
         	gene[geneCnt] = 0;
         
 		return gene;

@@ -14,12 +14,17 @@ public class Hallway {
 	public Hallway(){
 		this.x = (byte) ( ( Math.random() * 1000 ) % 32 );
 		this.y = (byte) ( ( Math.random() * 1000 ) % 32 );
-		this.length = (byte) ( ( Math.random() * 100 ) % 8);
-		this.direction = (byte) Math.round(Math.random());
-		if( this.length % 2 != 0){
-			if( this.length > 7 ) this.length--;
-			else this.length++;
+
+		this.length = 1;
+		while( this.length < 3 ){
+			this.length = (byte) ( ( Math.random() * 100 ) % 16);
+			if( this.length % 2 != 0){
+				if( this.length > 7 ) this.length--;
+				else this.length++;
+			}
 		}
+		
+		this.direction = (byte) Math.round(Math.random());
 	}
 	
 	//Constructor que recibe paremetros
@@ -51,7 +56,7 @@ public class Hallway {
 	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeGene(){
-		byte[] gene = new byte[18], a;
+		byte[] gene = new byte[20], a;
 		gene[0] = gene[1] = 0;
 		byte geneCnt = 2;
 		
@@ -64,13 +69,13 @@ public class Hallway {
         	gene[geneCnt] = a[i];
         
         a = toBinary(this.length);
-        for( int i = 2; i >= 0; i--, geneCnt++ )
+        for( int i = 3; i >= 0; i--, geneCnt++ )
         	gene[geneCnt] = a[i];
         
         gene[geneCnt] = this.direction;
         geneCnt++;
 
-        for( ; geneCnt < 18; geneCnt++)
+        for( ; geneCnt < 20; geneCnt++)
         	gene[geneCnt] = 0;
         
         
