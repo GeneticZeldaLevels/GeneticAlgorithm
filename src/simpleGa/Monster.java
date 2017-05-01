@@ -1,19 +1,23 @@
 package simpleGa;
 
 public class Monster {
+	//Posicion X y Y del monstruo
 	private byte x;
 	private byte y;
 	
+	//Constructor que genera elementos aleatorios
 	public Monster(){
 		this.x = (byte) ( ( Math.random() * 1000 ) % 128 );
 		this.y = (byte) ( ( Math.random() * 1000 ) % 128 );
 	}
 	
+	//Constructor que recibe paremetros
 	public Monster( byte x, byte y ){
 		this.x = x;
 		this.y = y;
 	}
 	
+	//Función para convertir numeros decimales en binarios
 	public byte[] toBinary( byte number ){
 		byte[] binary = new byte[7];
 		byte base = 64;
@@ -28,6 +32,7 @@ public class Monster {
 		return binary;
 	}
 	
+	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeGene(){
 		byte[] gene = new byte[24], a;
 		gene[0] = 1; gene[1] = 0;
@@ -48,6 +53,7 @@ public class Monster {
 		return gene;
 	}
 	
+	//Getters
 	public byte getX(){
 		return this.x;
 	}
@@ -56,6 +62,7 @@ public class Monster {
 		return this.y;
 	}
 	
+	//ToString
 	@Override
 	public String toString(){
 		String coded = "";

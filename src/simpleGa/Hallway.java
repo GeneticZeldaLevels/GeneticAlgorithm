@@ -1,11 +1,16 @@
 package simpleGa;
 
 public class Hallway {
+	//Posicion X y Y del centro del pasillo
 	private byte x;
 	private byte y;
+	
+	//Largo del pasillo (en impares)
 	private byte length;
+	//Dirección que apunta el pasillo
 	private byte direction;
 	
+	//Constructor que genera elementos aleatorios
 	public Hallway(){
 		this.x = (byte) ( ( Math.random() * 1000 ) % 128 );
 		this.y = (byte) ( ( Math.random() * 1000 ) % 128 );
@@ -17,6 +22,7 @@ public class Hallway {
 		}
 	}
 	
+	//Constructor que recibe paremetros
 	public Hallway( byte x, byte y, byte length, byte direction ){
 		this.x = x;
 		this.y = y;
@@ -28,6 +34,7 @@ public class Hallway {
 		}
 	}
 	
+	//Función para convertir numeros decimales en binarios
 	public byte[] toBinary( byte number ){
 		byte[] binary = new byte[7];
 		byte base = 64;
@@ -42,6 +49,7 @@ public class Hallway {
 		return binary;
 	}
 	
+	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeGene(){
 		byte[] gene = new byte[24], a;
 		gene[0] = gene[1] = 0;
@@ -69,6 +77,7 @@ public class Hallway {
 		return gene;
 	}
 	
+	//Getters
 	public byte getX(){
 		return this.x;
 	}
@@ -85,6 +94,7 @@ public class Hallway {
 		return this.direction;
 	}
 	
+	//ToString
 	@Override
 	public String toString(){
 		String coded = "";
