@@ -16,7 +16,6 @@ public class GA {
     	System.out.println(cont);
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
-    	System.out.println( ind.getMonstersOutPlaced() );
     	
     	//System.out.println( ind.getAllElementsIn() );
     	

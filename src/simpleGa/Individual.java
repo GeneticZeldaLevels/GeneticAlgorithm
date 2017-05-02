@@ -6,6 +6,7 @@ public class Individual {
     private byte[] chromosome = new byte[defaultChromosomeLength];
     // Cache
     private int fitness = 0;
+    private int chromosomeCnt = 0;
 
     // Create a random individual
     public void generateIndividual() {
@@ -13,8 +14,16 @@ public class Individual {
     	Room r;
     	Monster m;
     	byte[] coded;
-    	int chromosomeCnt = 0;
-        for (int i = 0; i < 20; i++) {
+    	h = new Hallway();
+    	coded = h.codeGene();
+    	
+    	//Se añade el cuarto donde debe iniciar
+    	r = new Room();
+    	coded = r.codeGene();
+    	addGeneToChromosome(coded);
+    	
+    	//Se añaden los demas elementos  
+        for (int i = 0; i < 18; i++) {
             byte gene = (byte) ( (Math.random() * 100) % 3 );
             if( gene == 0 ){
             	h = new Hallway();
@@ -29,13 +38,22 @@ public class Individual {
             	coded = m.codeGene();
             	//System.out.println("monster - "+ m.getX() +" - "+m.getY());
             }
-            for( int j = 0; j < coded.length; j++ ){
-        		chromosome[chromosomeCnt] = coded[j];
-        		chromosomeCnt++;
-        	}
+            addGeneToChromosome(coded);
         }
+        
+        //Se añade el cuarto donde debe finalizar
+    	r = new Room();
+    	coded = r.codeGene();
+    	addGeneToChromosome(coded);
     }
-
+    
+    private void addGeneToChromosome( byte[] gene ){
+    	for( int j = 0; j < gene.length; j++ ){
+    		chromosome[chromosomeCnt] = gene[j];
+    		chromosomeCnt++;
+    	}
+    }
+    
     /* Getters and setters */
     // Use this if you want to create individuals with different gene lengths
     public static void setDefaultChromosomeLength(int length) {

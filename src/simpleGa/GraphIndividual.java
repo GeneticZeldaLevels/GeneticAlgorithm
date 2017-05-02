@@ -14,9 +14,16 @@ import javax.swing.border.EmptyBorder;
 public class GraphIndividual extends JFrame {
 	private JPanel contentPane;
 	private String chromosome;
+	
+	private Room inicial;
+	private Room terminal;
+	
+	//Listas de pasillos, cuartos y monstruos
 	private ArrayList<Hallway> halls;
 	private ArrayList<Room> rooms;
 	private ArrayList<Monster> monsters;
+	
+	//Tamaño de celda grafica
 	private int cellSize;
 	
     /**
@@ -38,32 +45,28 @@ public class GraphIndividual extends JFrame {
     
     public void evalChromosome(){
     	String gene;
-    	for( int i = 0; i < chromosome.length(); i += 20 ){
+    	
+    	//Se saca el cuarto inicial
+    	inicial = FitnessCalc.geneToRoom( chromosome.substring( 0, 20 ) );
+    	
+    	//Se calcula el resto de elementos
+    	int i = 20;
+    	for( ; i < chromosome.length()-20; i += 20 ){
     		 gene = chromosome.substring( i, i+20 );
     		 if( gene.charAt(0) == '0' && gene.charAt(1) == '0' ){
-    			 /*byte x = FitnessCalc.binaryStringToByte( gene.substring( 2, 7 ) );
-    			 byte y = FitnessCalc.binaryStringToByte( gene.substring( 7, 12 ));
-    			 byte length = FitnessCalc.binaryStringToByte( "0" + gene.substring( 12, 16 ) );
-    			 byte direction = (byte) (( gene.charAt(16) == '1' )? 1: 0);
-    			 halls.add( new Hallway( x, y, length, direction ) );*/
     			 halls.add( FitnessCalc.geneToHallway(gene) );
     			 //System.out.println("hallway - "+ x +" - "+y+" - "+length+" - "+direction);
     		 }else if( gene.charAt(0) == '0' && gene.charAt(1) == '1' ){
-    			 /*byte x = FitnessCalc.binaryStringToByte( gene.substring( 2, 7 ) );
-    			 byte y = FitnessCalc.binaryStringToByte( gene.substring( 7, 12 ));
-    			 byte width = FitnessCalc.binaryStringToByte( "0"+gene.substring( 12, 16 ));
-    			 byte breadth = FitnessCalc.binaryStringToByte( "0"+gene.substring( 16, 20 ));
-    			 rooms.add(new Room( x, y, width, breadth ));*/
     			 rooms.add( FitnessCalc.geneToRoom(gene) );
     			 //System.out.println("room - "+ x +" - "+y+" - "+width+" - "+breadth);
     		 }else if( gene.charAt(0) == '1' && gene.charAt(1) == '0' ){
-    			 /*byte x = FitnessCalc.binaryStringToByte( gene.substring( 2, 7 ) );
-    			 byte y = FitnessCalc.binaryStringToByte( gene.substring( 7, 12 ));
-    			 monsters.add( new Monster( x, y ));*/
     			 monsters.add( FitnessCalc.geneToMonster(gene) );
     			 //System.out.println("monster - "+ x +" - "+y);
     		 }
     	}
+    	
+    	//Se saca el cuarto terminal
+    	terminal = FitnessCalc.geneToRoom( chromosome.substring( i, i+20 ) );
     }
 
     /**
@@ -82,6 +85,39 @@ public class GraphIndividual extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
         setBounds(0,0,700,700);
+    }
+    
+    private void paintHall( Hallway hall, Graphics g ){
+    	int init_x = hall.getX()+1, init_y = hall.getY()+1;
+    	if( hall.getDirection() == 0 ){
+    		init_x -= (byte)(hall.getLength()/2);
+    		int end_x = init_x + hall.getLength();
+    		for( int j = init_x; j <= end_x; j++ ){
+    			g.fillRect ( j*this.cellSize+50, init_y*this.cellSize+50, this.cellSize, this.cellSize);
+    		}
+    	}else if( hall.getDirection() == 1 ){
+    		init_y -= (byte)(hall.getLength()/2);
+    		int end_y = init_y + hall.getLength();
+    		for( int j = init_y; j <= end_y; j++ ){
+    			g.fillRect ( init_x*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
+    		}
+    	}
+    }
+    
+    private void paintRoom( Room room, Graphics g ){
+    	int init_x = room.getX()+1, init_y = room.getY()+1;
+    	init_x -= ((byte)(room.getWidth()/2) );
+    	init_y -= ((byte)(room.getBreadth()/2) );
+    	int end_x = init_x + room.getWidth() - 1, end_y = init_y + room.getBreadth() - 1;
+    	for( int j = init_x ; j <= end_x; j++ ){
+    		for( int k = init_y; k <= end_y; k++ ){
+    			g.fillRect ( j*this.cellSize+50, k*this.cellSize+50, this.cellSize, this.cellSize);
+    		}
+    	}
+    }
+    
+    private void paintMonster( Monster monster, Graphics g ){
+    	g.fillRect ( (monster.getX()+1)*this.cellSize+50, (monster.getY()+1)*this.cellSize+50, this.cellSize, this.cellSize);
     }
     
     public void paint (Graphics g)
@@ -107,39 +143,22 @@ public class GraphIndividual extends JFrame {
         }
         
         g.setColor(Color.red);
-        for( int i = 0; i < halls.size(); i++ ){
-        	int init_x = halls.get(i).getX()+1, init_y = halls.get(i).getY()+1;
-        	if( halls.get(i).getDirection() == 0 ){
-        		init_x -= (byte)(halls.get(i).getLength()/2);
-        		int end_x = init_x + halls.get(i).getLength();
-        		for( int j = init_x; j <= end_x; j++ ){
-        			g.fillRect ( j*this.cellSize+50, init_y*this.cellSize+50, this.cellSize, this.cellSize);
-        		}
-        	}else if( halls.get(i).getDirection() == 1 ){
-        		init_y -= (byte)(halls.get(i).getLength()/2);
-        		int end_y = init_y + halls.get(i).getLength();
-        		for( int j = init_y; j <= end_y; j++ ){
-        			g.fillRect ( init_x*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
-        		}
-        	}
-        }
+        for( int i = 0; i < halls.size(); i++ )
+        	paintHall(halls.get(i), g);
         
         g.setColor(Color.green);
-        for( int i = 0; i < rooms.size(); i++ ){
-        	int init_x = rooms.get(i).getX()+1, init_y = rooms.get(i).getY()+1;
-        	init_x -= ((byte)(rooms.get(i).getWidth()/2) );
-        	init_y -= ((byte)(rooms.get(i).getBreadth()/2) );
-        	int end_x = init_x + rooms.get(i).getWidth() - 1, end_y = init_y + rooms.get(i).getBreadth() - 1;
-        	for( int j = init_x ; j <= end_x; j++ ){
-        		for( int k = init_y; k <= end_y; k++ ){
-        			g.fillRect ( j*this.cellSize+50, k*this.cellSize+50, this.cellSize, this.cellSize);
-        		}
-        	}
-        }
+        for( int i = 0; i < rooms.size(); i++ )
+        	paintRoom( rooms.get(i), g );
         
         g.setColor(Color.blue);
-        for( int i = 0; i < monsters.size(); i++ ){
-        	g.fillRect ( (monsters.get(i).getX()+1)*this.cellSize+50, (monsters.get(i).getY()+1)*this.cellSize+50, this.cellSize, this.cellSize);
-        }
+        for( int i = 0; i < monsters.size(); i++ )
+        	paintMonster( monsters.get(i), g );
+        
+        g.setColor(Color.pink);
+        paintRoom( inicial, g );
+        g.drawString("A", inicial.getX(), inicial.getY());
+        
+        paintRoom( terminal, g );
+        g.drawString("B", terminal.getX(), terminal.getY());
     }
 }
