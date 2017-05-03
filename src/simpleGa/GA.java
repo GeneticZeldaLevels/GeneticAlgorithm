@@ -17,8 +17,6 @@ public class GA {
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
     	
-    	//System.out.println( ind.getAllElementsIn() );
-    	
     	//Se grafica el cromosoma
     	GraphIndividual frame = new GraphIndividual(chrome);
     	frame.runGraphic();

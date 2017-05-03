@@ -1,10 +1,6 @@
 package simpleGa;
 
-public class Hallway {
-	//Posicion X y Y del centro del pasillo
-	private byte x;
-	private byte y;
-	
+public class Hallway extends Element {
 	//Largo del pasillo (en impares)
 	private byte length;
 	//Dirección que apunta el pasillo
@@ -39,23 +35,8 @@ public class Hallway {
 		}
 	}
 	
-	//Función para convertir numeros decimales en binarios
-	public byte[] toBinary( byte number ){
-		byte[] binary = new byte[5];
-		byte base = 16;
-		for( int i = 4; i >= 0; i-- ){
-			if( number >= base ){
-				binary[i] = 1;
-				number -= base;
-			}
-			else binary[i] = 0;
-			base /= 2;
-		}
-		return binary;
-	}
-	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
-	public byte[] codeGene(){
+	public byte[] codeChromosome(){
 		byte[] gene = new byte[20], a;
 		gene[0] = gene[1] = 0;
 		byte geneCnt = 2;
@@ -82,32 +63,31 @@ public class Hallway {
 		return gene;
 	}
 	
-	//Getters
-	public byte getX(){
-		return this.x;
+	//Funcion que recibe un byte[][] como grafo y dibuja su posición
+	public byte[][] drawGraph( byte[][] graph ){	
+		byte x = getX(), y = getY();
+		if( getDirection() == 0 ){
+			x -= getLength()/2;
+			for( ; x <= (getX() + getLength()/2 ); x++ ){
+				if( ( x >= 0 && x <= 31  ) && ( y >= 0 && y <= 31 ) )
+					graph[x][y] = 1;
+			}
+		}else{
+			y -= getLength()/2;
+			for( ; y <= (getY() + getLength()/2 ); y++ ){
+				if( ( x >= 0 && x <= 31  ) && ( y >= 0 && y <= 31 ) )
+					graph[x][y] = 1;
+			}
+		}
+		
+		return graph;
 	}
-	
-	public byte getY(){
-		return this.y;
-	}
-	
+
 	public byte getLength(){
 		return this.length;
 	}
 	
 	public byte getDirection(){
 		return this.direction;
-	}
-	
-	//ToString
-	@Override
-	public String toString(){
-		String coded = "";
-		byte[] a = codeGene();
-		for( int i = 0; i < a.length; i++ ){
-			coded += a[i];
-		}
-		
-		return coded;
 	}
 }

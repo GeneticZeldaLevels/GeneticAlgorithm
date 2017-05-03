@@ -141,48 +141,20 @@ public class FitnessCalc {
     
     public static int getMonstersOutPlaced( Individual chromosome ){
     	int monstersOut = 0;
-    	byte[][] matx = new byte[32][32];
-    	ArrayList<Monster> monsters = new ArrayList<Monster>();
-    	Hallway hall;
-    	Room room;
     	
-    	String coded = chromosome.toString(), gene;
-    	for( int i = 0; i < coded.length(); i += 20 ){
-    		gene = coded.substring( i, i+20 );
-    		if( gene.charAt(0) == '0' && gene.charAt(1) == '0' ){
-    			hall = geneToHallway(gene);
-    			byte x = hall.getX(), y = hall.getY();
-    			if( hall.getDirection() == 0 ){
-    				x -= hall.getLength()/2;
-    				for( ; x <= (hall.getX() + hall.getLength()/2 ); x++ ){
-    					matx[x][y] = 1;
-    				}
-    			}else{
-    				y -= hall.getLength()/2;
-    				for( ; y <= (hall.getY() + hall.getLength()/2 ); y++ ){
-    					matx[x][y] = 1;
-    				}
-    			}
-    		}else if( gene.charAt(0) == '0' && gene.charAt(1) == '1' ){
-    			room = geneToRoom(gene);
-    			byte x_from = room.getX(), y_from = room.getY(), x_to = room.getX(), y_to = room.getY();
-    			x_from -= room.getWidth()/2;
-    			y_from -= room.getBreadth()/2;
-    			x_to += room.getWidth()/2;
-    			y_to += room.getBreadth()/2;
-    			for( int j = x_from; j <= x_to; j++ )
-    				for( int k = y_from; k <= y_to; k++ )
-    					matx[j][k] = 1;
-    		}else if( gene.charAt(0) == '1' && gene.charAt(1) == '0' ){
-    			monsters.add( geneToMonster(gene) );
-    		}
-    	}
-    	
-    	for( int i = 0; i < monsters.size(); i++ ){
-    		if( matx[ monsters.get(i).getX() ] [ monsters.get(i).getY() ] == 0 )
-    			monstersOut++;
+    	for( int i = 0; i < 20; i++ ){
+    		Element e = chromosome.getElement(i);
+    		if( e instanceof Monster )
+    			if( chromosome.checkInGraph( e.getX(), e.getY() ) == 0 )
+    				monstersOut++;
     	}
     	
     	return monstersOut;
+    }
+    
+    public static int getRunnableGraph( Individual chromosome ){
+    	int runnable = 0;
+    	
+    	return runnable;
     }
 }

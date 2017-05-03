@@ -150,15 +150,15 @@ public class GraphIndividual extends JFrame {
         for( int i = 0; i < rooms.size(); i++ )
         	paintRoom( rooms.get(i), g );
         
-        g.setColor(Color.blue);
-        for( int i = 0; i < monsters.size(); i++ )
-        	paintMonster( monsters.get(i), g );
-        
-        g.setColor(Color.pink);
+        g.setColor(Color.lightGray);
         paintRoom( inicial, g );
         g.drawString("A", inicial.getX(), inicial.getY());
         
         paintRoom( terminal, g );
         g.drawString("B", terminal.getX(), terminal.getY());
+        
+        g.setColor(Color.blue);
+        for( int i = 0; i < monsters.size(); i++ )
+        	paintMonster( monsters.get(i), g );
     }
 }

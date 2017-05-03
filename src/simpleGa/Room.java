@@ -1,10 +1,6 @@
 package simpleGa;
 
-public class Room {
-	//Posicion X y Y del centro del cuarto
-	private byte x;
-	private byte y;
-	
+public class Room extends Element {
 	//Ancho del cuarto
 	private byte width;
 	//Alto del cuarto
@@ -50,23 +46,8 @@ public class Room {
 		}*/
 	}
 	
-	//Función para convertir numeros decimales en binarios
-	public byte[] toBinary( byte number ){
-		byte[] binary = new byte[5];
-		byte base = 16;
-		for( int i = 4; i >= 0; i-- ){
-			if( number >= base ){
-				binary[i] = 1;
-				number -= base;
-			}
-			else binary[i] = 0;
-			base /= 2;
-		}
-		return binary;
-	}
-	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
-	public byte[] codeGene(){
+	public byte[] codeChromosome(){
 		byte[] gene = new byte[20], a;
 		gene[0] = 0; gene[1] = 1;
 		byte geneCnt = 2;
@@ -90,13 +71,18 @@ public class Room {
 		return gene;
 	}
 	
-	//Getters
-	public byte getX(){
-		return this.x;
-	}
-	
-	public byte getY(){
-		return this.y;
+	//Funcion que recibe un byte[][] como grafo y dibuja su posición
+	public byte[][] drawGraph( byte[][] graph ){
+		byte x_from = getX(), y_from = getY(), x_to = getX(), y_to = getY();
+		x_from -= getWidth()/2;
+		y_from -= getBreadth()/2;
+		x_to += getWidth()/2;
+		y_to += getBreadth()/2;
+		for( int j = x_from; j <= x_to; j++ )
+			for( int k = y_from; k <= y_to; k++ )
+				if( ( j >= 0 && j <= 31  ) && ( k >= 0 && k <= 31 ) )
+					graph[j][k] = 1;
+		return graph;
 	}
 	
 	public byte getWidth(){
@@ -105,16 +91,5 @@ public class Room {
 	
 	public byte getBreadth(){
 		return this.breadth;
-	}
-	
-	//ToString
-	@Override
-	public String toString(){
-		String coded = "";
-		byte[] a = codeGene();
-		for( int i = 0; i < a.length; i++ ){
-			coded += a[i];
-		}
-		return coded;
 	}
 }

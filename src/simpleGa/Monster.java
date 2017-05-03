@@ -1,10 +1,6 @@
 package simpleGa;
 
-public class Monster {
-	//Posicion X y Y del monstruo
-	private byte x;
-	private byte y;
-	
+public class Monster extends Element {
 	//Constructor que genera elementos aleatorios
 	public Monster(){
 		this.x = (byte) ( ( Math.random() * 1000 ) % 32 );
@@ -17,23 +13,8 @@ public class Monster {
 		this.y = y;
 	}
 	
-	//Función para convertir numeros decimales en binarios
-	public byte[] toBinary( byte number ){
-		byte[] binary = new byte[5];
-		byte base = 16;
-		for( int i = 4; i >= 0; i-- ){
-			if( number >= base ){
-				binary[i] = 1;
-				number -= base;
-			}
-			else binary[i] = 0;
-			base /= 2;
-		}
-		return binary;
-	}
-	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
-	public byte[] codeGene(){
+	public byte[] codeChromosome(){
 		byte[] gene = new byte[20], a;
 		gene[0] = 1; gene[1] = 0;
 		byte geneCnt = 2;
@@ -53,23 +34,8 @@ public class Monster {
 		return gene;
 	}
 	
-	//Getters
-	public byte getX(){
-		return this.x;
-	}
-	
-	public byte getY(){
-		return this.y;
-	}
-	
-	//ToString
-	@Override
-	public String toString(){
-		String coded = "";
-		byte[] a = codeGene();
-		for( int i = 0; i < a.length; i++ ){
-			coded += a[i];
-		}
-		return coded;
+	//Funcion que recibe un byte[][] como grafo y dibuja su posición
+	public byte[][] drawGraph( byte[][] graph ){
+		return graph;
 	}
 }
