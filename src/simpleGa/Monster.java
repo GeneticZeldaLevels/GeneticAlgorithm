@@ -35,7 +35,7 @@ public class Monster extends Element {
 	}
 	
 	//Funcion que recibe un byte[][] como grafo y dibuja su posición
-	public byte[][] drawGraph( byte[][] graph ){
+	public byte[][] drawGraph( byte[][] graph, byte elementIndex ){
 		return graph;
 	}
 }

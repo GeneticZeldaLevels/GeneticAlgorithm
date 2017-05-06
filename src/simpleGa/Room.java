@@ -72,7 +72,7 @@ public class Room extends Element {
 	}
 	
 	//Funcion que recibe un byte[][] como grafo y dibuja su posición
-	public byte[][] drawGraph( byte[][] graph ){
+	public byte[][] drawGraph( byte[][] graph, byte elementIndex ){
 		byte x_from = getX(), y_from = getY(), x_to = getX(), y_to = getY();
 		x_from -= getWidth()/2;
 		y_from -= getBreadth()/2;

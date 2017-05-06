@@ -1,6 +1,8 @@
 package simpleGa;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Individual {
 
@@ -68,14 +70,14 @@ public class Individual {
     
     private void addGeneToChromosome( byte[] gene ){
     	for( int j = 0; j < gene.length; j++ ){
-    		chromosome[chromosomeCnt] = gene[j];
-    		chromosomeCnt++;
+    		this.chromosome[this.chromosomeCnt] = gene[j];
+    		this.chromosomeCnt++;
     	}
     }
     
     private void createGraph(){
     	for( int i = 0; i < elements.size(); i++ )
-    		graph = elements.get(i).drawGraph(graph);
+    		graph = elements.get(i).drawGraph(graph, (byte) i);
     }
     
     /* Getters and setters */
@@ -94,6 +96,14 @@ public class Individual {
     }
 
     /* Public methods */
+    public int checkFounds( List<Integer> founds ){
+    	return 0;
+    }
+    
+    public int elementsSize() {
+        return elements.size();
+    }
+    
     public int size() {
         return chromosome.length;
     }

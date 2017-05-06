@@ -150,7 +150,7 @@ public class GraphIndividual extends JFrame {
         for( int i = 0; i < rooms.size(); i++ )
         	paintRoom( rooms.get(i), g );
         
-        g.setColor(Color.lightGray);
+        //g.setColor(Color.lightGray);
         paintRoom( inicial, g );
         g.drawString("A", inicial.getX(), inicial.getY());
         

@@ -3,6 +3,7 @@ package simpleGa;
 public class GA {
 
     public static void main(String[] args) {
+    	
     	//Crea un individuo (cromosoma) aleatorio de 20 elementos 
     	Individual ind;
     	int cont = 0;
@@ -10,10 +11,13 @@ public class GA {
     		ind = new Individual();
     		ind.generateIndividual();
     		cont++;
-    		if( ind.getAllElementsIn() == 0 && ind.getMonstersOutPlaced() == 0 )
+    		if( ind.getMonstersOutPlaced() == 0 )
     			break;
     	}
+    	
+    	
     	System.out.println(cont);
+    	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
     	

@@ -24,7 +24,7 @@ public abstract class Element {
 	public abstract byte[] codeChromosome();
 	
 	//Funcion que recibe un byte[][] como grafo y dibuja su posición
-	public abstract byte[][] drawGraph(byte[][] graph);
+	public abstract byte[][] drawGraph(byte[][] graph, byte elementIndex  );
 	
 	//Getters
 	public byte getX(){

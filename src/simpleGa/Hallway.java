@@ -64,19 +64,19 @@ public class Hallway extends Element {
 	}
 	
 	//Funcion que recibe un byte[][] como grafo y dibuja su posición
-	public byte[][] drawGraph( byte[][] graph ){	
+	public byte[][] drawGraph( byte[][] graph, byte elementIndex ){	
 		byte x = getX(), y = getY();
 		if( getDirection() == 0 ){
 			x -= getLength()/2;
 			for( ; x <= (getX() + getLength()/2 ); x++ ){
 				if( ( x >= 0 && x <= 31  ) && ( y >= 0 && y <= 31 ) )
-					graph[x][y] = 1;
+					graph[x][y] = elementIndex;
 			}
 		}else{
 			y -= getLength()/2;
 			for( ; y <= (getY() + getLength()/2 ); y++ ){
 				if( ( x >= 0 && x <= 31  ) && ( y >= 0 && y <= 31 ) )
-					graph[x][y] = 1;
+					graph[x][y] = elementIndex;
 			}
 		}
 		

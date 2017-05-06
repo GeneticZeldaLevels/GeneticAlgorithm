@@ -1,6 +1,10 @@
 package simpleGa;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Queue;
 
 public class FitnessCalc {
 
@@ -154,6 +158,57 @@ public class FitnessCalc {
     
     public static int getRunnableGraph( Individual chromosome ){
     	int runnable = 0;
+    	
+    	boolean canRun = false;
+    	
+    	Room inicial = (Room) chromosome.getElement(0), terminal = (Room) chromosome.getElement( chromosome.size()-1 );
+    	List<Integer> founds = new ArrayList<Integer>();
+    	Queue< Pair<Byte> > q = new ArrayDeque<Pair<Byte>>();
+    	HashMap<Pair<Byte>, Integer> seen = new HashMap<Pair<Byte>, Integer>();
+    	Pair<Byte> actual, back;
+    	
+    	q.add( new Pair<Byte>(inicial.getX(), inicial.getY()) );
+    	seen.put(new Pair<Byte>(inicial.getX(), inicial.getY()), 1 );
+    	while( !q.isEmpty() ){
+    		actual = q.poll();
+    		
+    		founds.add( chromosome.checkInGraph( actual.getX(), actual.getY()) );
+    		
+    		if( actual.equals( new Pair<Byte>(terminal.getX(), terminal.getY()) ) ) canRun = true;
+    		
+    		//Arriba
+    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() - 1) );
+    		if( actual.getY() - 1 >= 0 && seen.get( back ) != 1 && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    		
+    		//Derecha
+    		back = new Pair<Byte>( (byte)(actual.getX() + 1), actual.getY() );
+    		if( actual.getX() + 1 <= 31 && seen.get( back ) != 1 && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    		
+    		//Abajo
+    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() + 1) );
+    		if( actual.getY() + 1 <= 31 && seen.get( back ) != 1 && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    		
+    		//Left
+    		back = new Pair<Byte>( (byte)(actual.getX() - 1), actual.getY() );
+    		if( actual.getX() - 1 >= 0 && seen.get( back ) != 1 && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    	}
+    	
+    	//Falta verificar los founds con los que hay en el grafo
+    	//Y sumar el canRun
+    	
+    	chromosome.checkFounds( founds );
     	
     	return runnable;
     }
