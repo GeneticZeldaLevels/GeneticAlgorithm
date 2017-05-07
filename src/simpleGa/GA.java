@@ -1,11 +1,23 @@
 package simpleGa;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class GA {
 
     public static void main(String[] args) {
+    	
     	//Crea un individuo (cromosoma) aleatorio de 20 elementos 
-    	Individual ind = new Individual();
-    	ind.generateIndividual();
+    	Individual ind;
+    	int cont = 0;
+    	while(true){
+    		ind = new Individual();
+    		ind.generateIndividual();
+    		//ind.printGraph();
+    		cont++;
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
+    			break;
+    	}
     	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
@@ -13,7 +25,14 @@ public class GA {
     	//Se grafica el cromosoma
     	GraphIndividual frame = new GraphIndividual(chrome);
     	frame.runGraphic();
-    	
+
+    	try{
+    	    PrintWriter writer = new PrintWriter("map.json", "UTF-8");
+    	    writer.println(ind.toJSON());
+    	    writer.close();
+    	} catch (IOException e) {
+    	   // do something
+    	}
     	
     	/*
         // Set a candidate solution

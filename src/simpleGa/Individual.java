@@ -1,41 +1,81 @@
 package simpleGa;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class Individual {
 
     static int defaultChromosomeLength = 400;
-    private byte[] chromosome = new byte[defaultChromosomeLength];
+    private byte[] chromosome;
     // Cache
-    private int fitness = 0;
-
+    private int fitness;
+    private int chromosomeCnt;
+    private byte[][] graph;
+    private HashMap< Integer, Element > elements;
+    
+    public Individual(){
+    	graph = new byte[32][32];
+    	chromosome = new byte[defaultChromosomeLength];
+    	fitness = 0;
+    	chromosomeCnt = 0;
+    	elements = new HashMap<Integer, Element >();
+    }
+    
     // Create a random individual
     public void generateIndividual() {
     	Hallway h;
     	Room r;
     	Monster m;
     	byte[] coded;
-    	int chromosomeCnt = 0;
-        for (int i = 0; i < 20; i++) {
+    	int i = 0;
+    	
+    	//Se añade el cuarto donde debe iniciar
+    	r = new Room();
+    	coded = r.codeChromosome();
+    	addGeneToChromosome(coded);
+    	elements.put( i, r );
+    	graph = elements.get(0).drawGraph( graph, (byte) 1 );
+    	
+    	//Se añaden los demas elementos  
+        for ( i = 1; i <= 18; i++) {
             byte gene = (byte) ( (Math.random() * 100) % 3 );
             if( gene == 0 ){
             	h = new Hallway();
-            	coded = h.codeGene();
+            	coded = h.codeChromosome();
+            	elements.put( i, h );
             	//System.out.println("hallway - "+ h.getX() +" - "+h.getY()+" - "+h.getLength()+" - "+h.getDirection());
             }else if( gene == 1 ){
             	r = new Room();
-            	coded = r.codeGene();
+            	coded = r.codeChromosome();
+            	elements.put( i, r );
             	//System.out.println("room - "+ r.getX() +" - "+ r.getY() +" - "+r.getWidth()+" - "+ r.getBreadth() );
             }else{
             	m = new Monster();
-            	coded = m.codeGene();
+            	coded = m.codeChromosome();
+            	elements.put( i, m );
             	//System.out.println("monster - "+ m.getX() +" - "+m.getY());
             }
-            for( int j = 0; j < coded.length; j++ ){
-        		chromosome[chromosomeCnt] = coded[j];
-        		chromosomeCnt++;
-        	}
+            addGeneToChromosome(coded);
+            graph = elements.get(i).drawGraph( graph, (byte) (i+1) );
         }
+        
+        //Se añade el cuarto donde debe finalizar
+    	r = new Room();
+    	coded = r.codeChromosome();
+    	addGeneToChromosome(coded);
+    	elements.put( i, r );
+    	graph = elements.get(19).drawGraph( graph, (byte)20 );
+    	
     }
-
+    
+    private void addGeneToChromosome( byte[] gene ){
+    	for( int j = 0; j < gene.length; j++ ){
+    		this.chromosome[this.chromosomeCnt] = gene[j];
+    		this.chromosomeCnt++;
+    	}
+    }
+    
     /* Getters and setters */
     // Use this if you want to create individuals with different gene lengths
     public static void setDefaultChromosomeLength(int length) {
@@ -52,6 +92,19 @@ public class Individual {
     }
 
     /* Public methods */
+    public int checkNotFounds( List<Integer> founds ){
+    	int notFounds = 0, routeElements = 0;
+    	for( int i = 0; i < elements.size(); i++ )
+    		if( ( elements.get(i) instanceof Hallway || elements.get(i) instanceof Room ) )
+    			routeElements++;
+    	
+    	return routeElements - founds.size();
+    }
+    
+    public int elementsSize() {
+        return elements.size();
+    }
+    
     public int size() {
         return chromosome.length;
     }
@@ -62,7 +115,85 @@ public class Individual {
         }
         return fitness;
     }
-
+    
+    public int getAllElementsIn(){
+    	return FitnessCalc.getAllElementsIn(this);
+    }
+    
+    public int getMonstersOutPlaced(){
+    	return FitnessCalc.getMonstersOutPlaced(this);
+    }
+    
+    public int getRunnableGraph(){
+    	return FitnessCalc.getRunnableGraph(this);
+    }
+    
+    public Element getElement( int index ){
+    	return elements.get(index);
+    }
+    
+    public int checkInGraph( int x, int y ){
+    	return graph[x][y];
+    }
+    
+    public String toJSON(){
+    	List<Hallway> halls = new ArrayList<Hallway>();
+    	List<Room> rooms = new ArrayList<Room>();
+    	List<Monster> monsters = new ArrayList<Monster>();
+    	
+    	for( int i = 0; i < elementsSize(); i++ ){
+    		if( getElement(i) instanceof Hallway ) halls.add( (Hallway) getElement(i));
+    		else if( getElement(i) instanceof Room ) rooms.add( (Room) getElement(i));
+    		else if( getElement(i) instanceof Monster ) monsters.add( (Monster) getElement(i));
+    	}
+    	
+    	String json = "{";
+    	json += "\"cuartos\":[ ";
+    	
+    	for( int i = 0; i < rooms.size(); i++ ){
+    		json += "{";
+    		json += "\"x\": "+rooms.get(i).getX()+",";
+    		json += "\"y\": "+rooms.get(i).getY()+",";
+    		json += "\"ancho\": "+rooms.get(i).getWidth()+",";
+    		json += "\"alto\": "+rooms.get(i).getBreadth();
+    		json += "}";
+    		if( i != rooms.size()-1 )
+    			json += ",";
+    	}
+    	
+    	json += "],";
+    	
+    	json += "\"pasillos\":[ ";
+    	
+    	for( int i = 0; i < halls.size(); i++ ){
+    		json += "{";
+    		json += "\"x\": "+halls.get(i).getX()+",";
+    		json += "\"y\": "+halls.get(i).getY()+",";
+    		json += "\"largo\": "+halls.get(i).getLength()+",";
+    		json += "\"direccion\": "+halls.get(i).getDirection();
+    		json += "}";
+    		if( i != halls.size()-1 )
+    			json += ",";
+    	}
+    	
+    	json += "],";
+    	
+    	json += "\"monstruos\":[ ";
+    	
+    	for( int i = 0; i < monsters.size(); i++ ){
+    		json += "{";
+    		json += "\"x\": "+monsters.get(i).getX()+",";
+    		json += "\"y\": "+monsters.get(i).getY();
+    		json += "}";
+    		if( i != monsters.size()-1 )
+    			json += ",";
+    	}
+    	
+    	json += "]";
+    	json += "}";
+    	return json;
+    }
+    
     @Override
     public String toString() {
         String geneString = "";
