@@ -81,7 +81,7 @@ public class Room extends Element {
 		for( int j = x_from; j <= x_to; j++ )
 			for( int k = y_from; k <= y_to; k++ )
 				if( ( j >= 0 && j <= 31  ) && ( k >= 0 && k <= 31 ) )
-					graph[j][k] = 1;
+					graph[j][k] = elementIndex;
 		return graph;
 	}
 	

@@ -142,18 +142,27 @@ public class GraphIndividual extends JFrame {
         	}
         }
         
-        g.setColor(Color.red);
-        for( int i = 0; i < halls.size(); i++ )
-        	paintHall(halls.get(i), g);
+        g.setColor(new Color(100, 100, 100));
+        paintRoom( inicial, g );
+        g.drawString("A", inicial.getX(), inicial.getY());
+        
+        /*int counter = 0;
+        for( int i = 0; i < rooms.size(); i++ ){
+        	g.setColor(new Color(150, 0, counter));
+        	paintRoom( rooms.get(i), g );
+        	counter += 25;
+        }*/
         
         g.setColor(Color.green);
         for( int i = 0; i < rooms.size(); i++ )
         	paintRoom( rooms.get(i), g );
         
-        //g.setColor(Color.lightGray);
-        paintRoom( inicial, g );
-        g.drawString("A", inicial.getX(), inicial.getY());
         
+        g.setColor(Color.red);
+        for( int i = 0; i < halls.size(); i++ )
+        	paintHall(halls.get(i), g);
+        
+        g.setColor(Color.yellow);
         paintRoom( terminal, g );
         g.drawString("B", terminal.getX(), terminal.getY());
         

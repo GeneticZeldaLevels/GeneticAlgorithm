@@ -35,6 +35,7 @@ public class Individual {
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
     	elements.put( i, r );
+    	graph = elements.get(0).drawGraph( graph, (byte) 1 );
     	
     	//Se añaden los demas elementos  
         for ( i = 1; i <= 18; i++) {
@@ -56,6 +57,7 @@ public class Individual {
             	//System.out.println("monster - "+ m.getX() +" - "+m.getY());
             }
             addGeneToChromosome(coded);
+            graph = elements.get(i).drawGraph( graph, (byte) (i+1) );
         }
         
         //Se añade el cuarto donde debe finalizar
@@ -63,9 +65,8 @@ public class Individual {
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
     	elements.put( i, r );
+    	graph = elements.get(19).drawGraph( graph, (byte)20 );
     	
-    	//Se crea el grafo del mapa
-    	createGraph();
     }
     
     private void addGeneToChromosome( byte[] gene ){
@@ -73,11 +74,6 @@ public class Individual {
     		this.chromosome[this.chromosomeCnt] = gene[j];
     		this.chromosomeCnt++;
     	}
-    }
-    
-    private void createGraph(){
-    	for( int i = 0; i < elements.size(); i++ )
-    		graph = elements.get(i).drawGraph(graph, (byte) i);
     }
     
     /* Getters and setters */
@@ -96,8 +92,13 @@ public class Individual {
     }
 
     /* Public methods */
-    public int checkFounds( List<Integer> founds ){
-    	return 0;
+    public int checkNotFounds( List<Integer> founds ){
+    	int notFounds = 0, routeElements = 0;
+    	for( int i = 0; i < elements.size(); i++ )
+    		if( ( elements.get(i) instanceof Hallway || elements.get(i) instanceof Room ) )
+    			routeElements++;
+    	
+    	return routeElements - founds.size();
     }
     
     public int elementsSize() {
@@ -134,7 +135,7 @@ public class Individual {
     public int checkInGraph( int x, int y ){
     	return graph[x][y];
     }
-
+    
     @Override
     public String toString() {
         String geneString = "";

@@ -79,7 +79,7 @@ public class Hallway extends Element {
 					graph[x][y] = elementIndex;
 			}
 		}
-		
+
 		return graph;
 	}
 

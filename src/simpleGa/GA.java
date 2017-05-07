@@ -10,13 +10,14 @@ public class GA {
     	while(true){
     		ind = new Individual();
     		ind.generateIndividual();
+    		//ind.printGraph();
     		cont++;
-    		if( ind.getMonstersOutPlaced() == 0 )
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
     			break;
     	}
-    	
-    	
-    	System.out.println(cont);
+    	System.out.println();
+    	System.out.println("cont: "+cont);
+    	System.out.println("runnable: "+ind.getRunnableGraph());
     	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();

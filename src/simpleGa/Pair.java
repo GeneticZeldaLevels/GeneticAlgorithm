@@ -1,5 +1,7 @@
 package simpleGa;
 
+import java.util.Objects;
+
 public class Pair<T> {
 	private T x;
 	private T y;
@@ -24,5 +26,10 @@ public class Pair<T> {
 	    final Pair other = (Pair) eval;
 	    if( !other.getX().equals(this.getX()) || !other.getY().equals(this.getY()) ) return false;
 	    return true;
+	}
+	
+	@Override
+	public int hashCode(){
+		return Objects.hash(this.x, this.y);
 	}
 }
