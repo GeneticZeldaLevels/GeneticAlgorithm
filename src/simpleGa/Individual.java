@@ -136,6 +136,64 @@ public class Individual {
     	return graph[x][y];
     }
     
+    public String toJSON(){
+    	List<Hallway> halls = new ArrayList<Hallway>();
+    	List<Room> rooms = new ArrayList<Room>();
+    	List<Monster> monsters = new ArrayList<Monster>();
+    	
+    	for( int i = 0; i < elementsSize(); i++ ){
+    		if( getElement(i) instanceof Hallway ) halls.add( (Hallway) getElement(i));
+    		else if( getElement(i) instanceof Room ) rooms.add( (Room) getElement(i));
+    		else if( getElement(i) instanceof Monster ) monsters.add( (Monster) getElement(i));
+    	}
+    	
+    	String json = "{";
+    	json += "\"cuartos\":[ ";
+    	
+    	for( int i = 0; i < rooms.size(); i++ ){
+    		json += "{";
+    		json += "\"x\": "+rooms.get(i).getX()+",";
+    		json += "\"y\": "+rooms.get(i).getY()+",";
+    		json += "\"ancho\": "+rooms.get(i).getWidth()+",";
+    		json += "\"largo\": "+rooms.get(i).getBreadth();
+    		json += "}";
+    		if( i != rooms.size()-1 )
+    			json += ",";
+    	}
+    	
+    	json += "],";
+    	
+    	json += "\"pasillos\":[ ";
+    	
+    	for( int i = 0; i < halls.size(); i++ ){
+    		json += "{";
+    		json += "\"x\": "+halls.get(i).getX()+",";
+    		json += "\"y\": "+halls.get(i).getY()+",";
+    		json += "\"largo\": "+halls.get(i).getLength()+",";
+    		json += "\"direccion\": "+halls.get(i).getDirection();
+    		json += "}";
+    		if( i != halls.size()-1 )
+    			json += ",";
+    	}
+    	
+    	json += "],";
+    	
+    	json += "\"monstruos\":[ ";
+    	
+    	for( int i = 0; i < monsters.size(); i++ ){
+    		json += "{";
+    		json += "\"x\": "+monsters.get(i).getX()+",";
+    		json += "\"y\": "+monsters.get(i).getY();
+    		json += "}";
+    		if( i != monsters.size()-1 )
+    			json += ",";
+    	}
+    	
+    	json += "]";
+    	json += "}";
+    	return json;
+    }
+    
     @Override
     public String toString() {
         String geneString = "";

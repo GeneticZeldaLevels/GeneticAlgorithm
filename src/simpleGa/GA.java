@@ -1,5 +1,8 @@
 package simpleGa;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class GA {
 
     public static void main(String[] args) {
@@ -15,9 +18,6 @@ public class GA {
     		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
     			break;
     	}
-    	System.out.println();
-    	System.out.println("cont: "+cont);
-    	System.out.println("runnable: "+ind.getRunnableGraph());
     	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
@@ -25,7 +25,14 @@ public class GA {
     	//Se grafica el cromosoma
     	GraphIndividual frame = new GraphIndividual(chrome);
     	frame.runGraphic();
-    	
+
+    	try{
+    	    PrintWriter writer = new PrintWriter("map.json", "UTF-8");
+    	    writer.println(ind.toJSON());
+    	    writer.close();
+    	} catch (IOException e) {
+    	   // do something
+    	}
     	
     	/*
         // Set a candidate solution
