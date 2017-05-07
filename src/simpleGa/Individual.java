@@ -155,7 +155,7 @@ public class Individual {
     		json += "\"x\": "+rooms.get(i).getX()+",";
     		json += "\"y\": "+rooms.get(i).getY()+",";
     		json += "\"ancho\": "+rooms.get(i).getWidth()+",";
-    		json += "\"largo\": "+rooms.get(i).getBreadth();
+    		json += "\"alto\": "+rooms.get(i).getBreadth();
     		json += "}";
     		if( i != rooms.size()-1 )
     			json += ",";
