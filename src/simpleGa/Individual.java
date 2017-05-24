@@ -31,11 +31,12 @@ public class Individual {
     	int i = 0;
     	
     	//Se añade el cuarto donde debe iniciar
-    	r = new Room();
+    	r = new Room((byte) 0, (byte) 0);
+    	//r = new Room();
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
     	elements.put( i, r );
-    	graph = elements.get(0).drawGraph( graph, (byte) 1 );
+    	this.graph = elements.get(0).drawGraph( graph, (byte) 1 );
     	
     	//Se añaden los demas elementos  
         for ( i = 1; i <= 18; i++) {
@@ -44,11 +45,13 @@ public class Individual {
             	h = new Hallway();
             	coded = h.codeChromosome();
             	elements.put( i, h );
+            	this.graph = h.drawGraph( graph, (byte) (i+1) );
             	//System.out.println("hallway - "+ h.getX() +" - "+h.getY()+" - "+h.getLength()+" - "+h.getDirection());
             }else if( gene == 1 ){
             	r = new Room();
             	coded = r.codeChromosome();
             	elements.put( i, r );
+            	this.graph = r.drawGraph( graph, (byte) (i+1) );
             	//System.out.println("room - "+ r.getX() +" - "+ r.getY() +" - "+r.getWidth()+" - "+ r.getBreadth() );
             }else{
             	m = new Monster();
@@ -57,22 +60,34 @@ public class Individual {
             	//System.out.println("monster - "+ m.getX() +" - "+m.getY());
             }
             addGeneToChromosome(coded);
-            graph = elements.get(i).drawGraph( graph, (byte) (i+1) );
         }
         
         //Se añade el cuarto donde debe finalizar
-    	r = new Room();
+    	r = new Room((byte)31,(byte)31);
+        //r = new Room();
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
     	elements.put( i, r );
     	graph = elements.get(19).drawGraph( graph, (byte)20 );
-    	
     }
     
     private void addGeneToChromosome( byte[] gene ){
     	for( int j = 0; j < gene.length; j++ ){
     		this.chromosome[this.chromosomeCnt] = gene[j];
     		this.chromosomeCnt++;
+    	}
+    }
+    
+    public void printGraph(){
+    	for( byte i = 0; i < 32; i++ ){
+    		for( byte j = 0; j < 32; j++ ){
+    			String printed = ""+this.graph[i][j];
+    			if( this.graph[i][j] < 10 ){
+    				printed = "0"+this.graph[i][j];
+    			}
+    			System.out.print(printed+" ");
+    		}
+    		System.out.println();
     	}
     }
     
@@ -132,8 +147,8 @@ public class Individual {
     	return elements.get(index);
     }
     
-    public int checkInGraph( int x, int y ){
-    	return graph[x][y];
+    public int checkInGraph( byte x, byte y ){
+    	return this.graph[y][x];
     }
     
     public String toJSON(){

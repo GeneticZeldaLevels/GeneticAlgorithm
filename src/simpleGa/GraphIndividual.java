@@ -106,8 +106,10 @@ public class GraphIndividual extends JFrame {
     
     private void paintRoom( Room room, Graphics g ){
     	int init_x = room.getX()+1, init_y = room.getY()+1;
+    	
     	init_x -= ((byte)(room.getWidth()/2) );
     	init_y -= ((byte)(room.getBreadth()/2) );
+    	
     	int end_x = init_x + room.getWidth() - 1, end_y = init_y + room.getBreadth() - 1;
     	for( int j = init_x ; j <= end_x; j++ ){
     		for( int k = init_y; k <= end_y; k++ ){

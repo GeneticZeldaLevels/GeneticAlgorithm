@@ -36,15 +36,32 @@ public class Room extends Element {
 		this.y = y;
 		this.width = width;
 		this.breadth = breadth;
-		/*if( this.width % 2 != 0){
-			if( this.width > 7 ) this.width--;
-			else this.width++;
-		}
-		if( this.breadth % 2 != 0){
-			if( this.breadth > 7 ) this.breadth--;
-			else this.breadth++;
-		}*/
 	}
+	
+	//Constructor que recibe paremetros
+		public Room(byte x, byte y){
+			this.x = x;
+			this.y = y;
+
+			this.width = 1;
+			while( this.width < 5 ){
+				this.width = (byte) ( ( Math.random() * 100 ) % 16);
+				if( this.width % 2 == 0 ){
+					if( this.width > 9 ) this.width--;
+					else this.width++;
+				}
+			}
+			
+			this.breadth = 1;
+			while( this.breadth < 5 ){
+				this.breadth = (byte) ( ( Math.random() * 100 ) % 16);
+				if( this.breadth % 2 == 0 ){
+					if( this.breadth > 9 ) this.breadth--;
+					else this.breadth++;
+				}
+			}
+			
+		}
 	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeChromosome(){
@@ -73,15 +90,18 @@ public class Room extends Element {
 	
 	//Funcion que recibe un byte[][] como grafo y dibuja su posición
 	public byte[][] drawGraph( byte[][] graph, byte elementIndex ){
-		byte x_from = getX(), y_from = getY(), x_to = getX(), y_to = getY();
-		x_from -= getWidth()/2;
-		y_from -= getBreadth()/2;
-		x_to += getWidth()/2;
-		y_to += getBreadth()/2;
-		for( int j = x_from; j <= x_to; j++ )
-			for( int k = y_from; k <= y_to; k++ )
-				if( ( j >= 0 && j <= 31  ) && ( k >= 0 && k <= 31 ) )
-					graph[j][k] = elementIndex;
+		byte x_from = this.getX(), y_from = this.getY(), x_to = this.getX(), y_to = this.getY();
+		
+		x_from -= ((byte)getWidth()/2);
+		y_from -= ((byte)getBreadth()/2);
+		
+		x_to += ((byte)getWidth()/2);
+		y_to += ((byte)getBreadth()/2);
+		
+		for( byte i = y_from; i <= y_to; i++ )
+			for( byte j = x_from; j <= x_to; j++ )
+				if( ( i >= 0 && i <= 31  ) && ( j >= 0 && j <= 31 ) )
+					graph[i][j] = elementIndex;
 		return graph;
 	}
 	

@@ -6,18 +6,18 @@ import java.io.PrintWriter;
 public class GA {
 
     public static void main(String[] args) {
-    	
     	//Crea un individuo (cromosoma) aleatorio de 20 elementos 
     	Individual ind;
     	int cont = 0;
     	while(true){
     		ind = new Individual();
     		ind.generateIndividual();
-    		//ind.printGraph();
     		cont++;
+    		
     		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
     			break;
     	}
+    	System.out.println(cont);
     	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();

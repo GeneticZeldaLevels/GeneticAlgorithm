@@ -74,7 +74,7 @@ public class FitnessCalc {
     	byte x = binaryStringToByte( gene.substring( 2, 7 ) );
 		byte y = binaryStringToByte( gene.substring( 7, 12 ));
 		byte width = binaryStringToByte( "0"+gene.substring( 12, 16 ));
-		byte breadth = binaryStringToByte( "0"+gene.substring( 16, 20 ));
+		byte breadth = binaryStringToByte( "0"+gene.substring( 16, 20 ));		
 		room = (new Room( x, y, width, breadth ));
     	return room;
     }
@@ -145,12 +145,13 @@ public class FitnessCalc {
     
     public static int getMonstersOutPlaced( Individual chromosome ){
     	int monstersOut = 0;
-    	
     	for( int i = 0; i < 20; i++ ){
     		Element e = chromosome.getElement(i);
-    		if( e instanceof Monster )
+    		if( e instanceof Monster ){
+    			//System.out.println(e.getX()+" - "+e.getY()+"	"+chromosome.checkInGraph( e.getX(), e.getY() ));
     			if( chromosome.checkInGraph( e.getX(), e.getY() ) == 0 )
     				monstersOut++;
+    		}
     	}
     	
     	return monstersOut;

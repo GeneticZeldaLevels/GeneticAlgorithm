@@ -63,23 +63,42 @@ public class Hallway extends Element {
 		return gene;
 	}
 	
+	/*int init_x = hall.getX()+1, init_y = hall.getY()+1;
+	if( hall.getDirection() == 0 ){
+		init_x -= (byte)(hall.getLength()/2);
+		int end_x = init_x + hall.getLength();
+		for( int j = init_x; j <= end_x; j++ ){
+			g.fillRect ( j*this.cellSize+50, init_y*this.cellSize+50, this.cellSize, this.cellSize);
+		}
+	}else if( hall.getDirection() == 1 ){
+		init_y -= (byte)(hall.getLength()/2);
+		int end_y = init_y + hall.getLength();
+		for( int j = init_y; j <= end_y; j++ ){
+			g.fillRect ( init_x*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
+		}
+	}*/
+	
+	
 	//Funcion que recibe un byte[][] como grafo y dibuja su posición
 	public byte[][] drawGraph( byte[][] graph, byte elementIndex ){	
-		byte x = getX(), y = getY();
-		if( getDirection() == 0 ){
-			x -= getLength()/2;
-			for( ; x <= (getX() + getLength()/2 ); x++ ){
-				if( ( x >= 0 && x <= 31  ) && ( y >= 0 && y <= 31 ) )
-					graph[x][y] = elementIndex;
+		int init_x = this.getX(), init_y = this.getY();
+		if( this.getDirection() == 0 ){
+			init_x -= (byte)(this.getLength()/2);
+			int end_x = init_x + this.getLength();
+			for( int j = init_x; j <= end_x; j++ ){
+				//g.fillRect ( j*this.cellSize+50, init_y*this.cellSize+50, this.cellSize, this.cellSize);
+				if( ( j >= 0 && j <= 31  ) && ( init_y >= 0 && init_y <= 31 ) )
+					graph[init_y][j] = elementIndex;
 			}
-		}else{
-			y -= getLength()/2;
-			for( ; y <= (getY() + getLength()/2 ); y++ ){
-				if( ( x >= 0 && x <= 31  ) && ( y >= 0 && y <= 31 ) )
-					graph[x][y] = elementIndex;
+		}else if( this.getDirection() == 1 ){
+			init_y -= (byte)(this.getLength()/2);
+			int end_y = init_y + this.getLength();
+			for( int j = init_y; j <= end_y; j++ ){
+				//g.fillRect ( init_x*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
+				if( ( j >= 0 && j <= 31  ) && ( init_y >= 0 && init_y <= 31 ) )
+					graph[j][init_x] = elementIndex;
 			}
 		}
-
 		return graph;
 	}
 
