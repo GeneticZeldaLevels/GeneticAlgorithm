@@ -86,16 +86,15 @@ public class Hallway extends Element {
 			init_x -= (byte)(this.getLength()/2);
 			int end_x = init_x + this.getLength();
 			for( int j = init_x; j <= end_x; j++ ){
-				//g.fillRect ( j*this.cellSize+50, init_y*this.cellSize+50, this.cellSize, this.cellSize);
 				if( ( j >= 0 && j <= 31  ) && ( init_y >= 0 && init_y <= 31 ) )
 					graph[init_y][j] = elementIndex;
+				
 			}
 		}else if( this.getDirection() == 1 ){
 			init_y -= (byte)(this.getLength()/2);
 			int end_y = init_y + this.getLength();
 			for( int j = init_y; j <= end_y; j++ ){
-				//g.fillRect ( init_x*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
-				if( ( j >= 0 && j <= 31  ) && ( init_y >= 0 && init_y <= 31 ) )
+				if( ( j >= 0 && j <= 31  ) && ( init_x >= 0 && init_x <= 31 ) )
 					graph[j][init_x] = elementIndex;
 			}
 		}

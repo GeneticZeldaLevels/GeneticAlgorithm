@@ -33,7 +33,7 @@ public class FitnessCalc {
     }
 
     // Calculate inidividuals fittness by comparing it to our candidate solution
-    static int getFitness(Individual individual) {
+    /*static int getFitness(Individual individual) {
         int fitness = 0;
         // Loop through our individuals genes and compare them to our cadidates
         for (int i = 0; i < individual.size() && i < solution.length; i++) {
@@ -42,6 +42,71 @@ public class FitnessCalc {
             }
         }
         return fitness;
+    }*/
+    
+    static int getFitness(Individual chromosome){
+    	int fitness = 0;
+    	
+    	int runnable = 0;
+    	int notFounds = 0;
+    	
+    	boolean canRun = false;
+    	
+    	Room inicial = (Room) chromosome.getElement(0), terminal = (Room) chromosome.getElement( chromosome.elementsSize()-1 );
+    	List<Integer> founds = new ArrayList<Integer>();
+    	Queue< Pair<Byte> > q = new ArrayDeque<Pair<Byte>>();
+    	HashMap<Pair<Byte>, Integer> seen = new HashMap<Pair<Byte>, Integer>();
+    	Pair<Byte> actual, back;
+    	
+    	q.add( new Pair<Byte>(inicial.getX(), inicial.getY()) );
+    	seen.put(new Pair<Byte>(inicial.getX(), inicial.getY()), 1 );
+    	while( !q.isEmpty() ){
+    		actual = q.poll();
+    		
+    		if( !founds.contains( chromosome.checkInGraph( actual.getX(), actual.getY()) ) )
+    			founds.add( chromosome.checkInGraph( actual.getX(), actual.getY()) );
+    		
+    		if( actual.equals( new Pair<Byte>(terminal.getX(), terminal.getY()) ) ) canRun = true;
+    		
+    		//Arriba
+    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() - 1) );
+    		//System.out.println( seen.get( back ) == null );
+    		if( actual.getY() - 1 >= 0 && ( seen.get( back ) == null ) && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    		
+    		//Derecha
+    		back = new Pair<Byte>( (byte)(actual.getX() + 1), actual.getY() );
+    		//System.out.println( seen.get( back ) == null );
+    		if( actual.getX() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    		
+    		//Abajo
+    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() + 1) );
+    		//System.out.println( seen.get( back ) == null );
+    		if( actual.getY() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    		
+    		//Left
+    		back = new Pair<Byte>( (byte)(actual.getX() - 1), actual.getY() );
+    		//System.out.println( seen.get( back ) == null );
+    		if( actual.getX() - 1 >= 0 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			seen.put(back, 1);
+    			q.add( back );
+    		}
+    	}
+    	
+    	notFounds = chromosome.checkNotFounds( founds );
+    	if( !canRun ) notFounds += 100;
+    	
+    	
+    	
+    	return fitness;
     }
     
     // Get optimum fitness
@@ -145,7 +210,7 @@ public class FitnessCalc {
     
     public static int getMonstersOutPlaced( Individual chromosome ){
     	int monstersOut = 0;
-    	for( int i = 0; i < 20; i++ ){
+    	for( int i = 19; i < chromosome.elementsSize(); i++ ){
     		Element e = chromosome.getElement(i);
     		if( e instanceof Monster ){
     			//System.out.println(e.getX()+" - "+e.getY()+"	"+chromosome.checkInGraph( e.getX(), e.getY() ));
@@ -164,6 +229,7 @@ public class FitnessCalc {
     	boolean canRun = false;
     	
     	Room inicial = (Room) chromosome.getElement(0), terminal = (Room) chromosome.getElement( chromosome.elementsSize()-1 );
+    	
     	List<Integer> founds = new ArrayList<Integer>();
     	Queue< Pair<Byte> > q = new ArrayDeque<Pair<Byte>>();
     	HashMap<Pair<Byte>, Integer> seen = new HashMap<Pair<Byte>, Integer>();

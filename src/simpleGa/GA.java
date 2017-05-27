@@ -13,7 +13,6 @@ public class GA {
     		ind = new Individual();
     		ind.generateIndividual();
     		cont++;
-    		
     		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
     			break;
     	}

@@ -7,7 +7,7 @@ import java.util.List;
 public class Individual {
 
     static int defaultChromosomeLength = 400;
-    private byte[] chromosome;
+    private ArrayList<Byte> chromosome;
     // Cache
     private int fitness;
     private int chromosomeCnt;
@@ -16,7 +16,8 @@ public class Individual {
     
     public Individual(){
     	graph = new byte[32][32];
-    	chromosome = new byte[defaultChromosomeLength];
+    	this.chromosome = new ArrayList<Byte>();
+    	//chromosome = new byte[defaultChromosomeLength];
     	fitness = 0;
     	chromosomeCnt = 0;
     	elements = new HashMap<Integer, Element >();
@@ -40,7 +41,7 @@ public class Individual {
     	
     	//Se añaden los demas elementos  
         for ( i = 1; i <= 18; i++) {
-            byte gene = (byte) ( (Math.random() * 100) % 3 );
+            byte gene = (byte) ( (Math.random() * 100) % 2 );
             if( gene == 0 ){
             	h = new Hallway();
             	coded = h.codeChromosome();
@@ -61,19 +62,29 @@ public class Individual {
             }
             addGeneToChromosome(coded);
         }
-        
-        //Se añade el cuarto donde debe finalizar
+    	byte monstersQuantity = (byte) ( ((Math.random() * 100) % 10 ) + 10);
+    	while(monstersQuantity-- >= 0){
+    		m = new Monster();
+        	coded = m.codeChromosome();
+        	elements.put( i, m );
+        	addGeneToChromosome(coded);
+        	i++;
+    	}
+    	
+    	//Se añade el cuarto donde debe finalizar
     	r = new Room((byte)31,(byte)31);
         //r = new Room();
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
     	elements.put( i, r );
-    	graph = elements.get(19).drawGraph( graph, (byte)20 );
+    	graph = elements.get(elementsSize()-1).drawGraph( graph, (byte)20 );
+    	i++;
     }
     
     private void addGeneToChromosome( byte[] gene ){
     	for( int j = 0; j < gene.length; j++ ){
-    		this.chromosome[this.chromosomeCnt] = gene[j];
+    		this.chromosome.add(gene[j]);
+    		//this.chromosome[this.chromosomeCnt] = gene[j];
     		this.chromosomeCnt++;
     	}
     }
@@ -98,11 +109,11 @@ public class Individual {
     }
     
     public byte getGene(int index) {
-        return chromosome[index];
+        return chromosome.get(index);
     }
 
     public void setGene(int index, byte value) {
-        chromosome[index] = value;
+        chromosome.set(index, value);
         fitness = 0;
     }
 
@@ -121,7 +132,7 @@ public class Individual {
     }
     
     public int size() {
-        return chromosome.length;
+        return chromosome.size();
     }
 
     public int getFitness() {
