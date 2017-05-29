@@ -25,9 +25,8 @@ public class GA {
     	while(true){
     		ind = new Individual();
     		ind.generateIndividual();
-    		//System.out.println(ind.getMonstersOutPlaced());
     		cont++;
-    		if( /*ind.getMonstersOutPlaced() == 0 &&*/ ind.getRunnableGraph() == 0 )
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
     			break;
     	}
     	System.out.println(cont);

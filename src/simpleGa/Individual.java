@@ -32,8 +32,8 @@ public class Individual {
     	int i = 0;
     	
     	byte x_init = 0, y_init = 0, x_end = 0, y_end = 0;
-    	byte x_range = 0, y_range = 0, x_monster_range = 0, y_monster_range = 0;
-    	byte x_step = 0, y_step = 0;
+    	byte x_range = 0, y_range = 0, x_monster_init = 0, y_monster_init = 0;
+    	byte x_step = 0, y_step = 0, x_monster_step = 0, y_monster_step = 0;
     	
     	byte distribution = (byte) ( (Math.random() * 100) % 4 );
     	
@@ -90,13 +90,37 @@ public class Individual {
             addGeneToChromosome(coded);
         }
         
-    	byte monstersQuantity = (byte) ( ((Math.random() * 100) % 5 ) + 10);
+    	byte monstersQuantity = 5;
+    	if( distribution == 0 ){
+    		x_monster_init = y_monster_init = 0;
+    		x_monster_step = 5;
+    		y_monster_step = 5;
+    	}else if( distribution == 1 ){
+    		x_monster_init = 26;
+    		y_monster_init = 0;
+    		x_monster_step = -5;
+    		y_monster_step = 5;
+    	}else if( distribution == 2 ){
+    		x_monster_init = y_monster_init = 26;
+    		x_monster_step = -5;
+    		y_monster_step = -5;
+    	}else if( distribution == 3 ){
+    		x_monster_init = 0;
+    		y_monster_init = 26;
+    		x_monster_step = 5;
+    		y_monster_step = -5;
+    	}
     	while(monstersQuantity-- >= 0){
-    		m = new Monster();
-        	coded = m.codeChromosome();
-        	elements.put( i, m );
-        	addGeneToChromosome(coded);
-        	i++;
+    		byte quantity = (byte) ( ((Math.random() * 100) % 5) + 1 );
+        	while( quantity-- > 0  ){
+        		m = new Monster( (byte) ( ((Math.random() * 100) % 5) + x_monster_init ), (byte) ( ((Math.random() * 100) % 5) + y_monster_init ) );
+    			coded = m.codeChromosome();
+    			elements.put( i, m );
+    			addGeneToChromosome(coded);
+    			i++;
+        	}
+        	x_monster_init += x_monster_step;
+			y_monster_init += y_monster_step;
     	}
     	
     	//Se añade el cuarto donde debe finalizar
