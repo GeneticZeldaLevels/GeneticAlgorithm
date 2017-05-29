@@ -27,7 +27,7 @@ public class GA {
     		ind = new Individual();
     		ind.generateIndividual();
     		cont++;
-    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 && ind.getFitness() <= 0.8 )
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 && ind.getFitness() >= 0.9 )
     			break;
     	}
     	
