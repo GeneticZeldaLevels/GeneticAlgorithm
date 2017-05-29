@@ -12,6 +12,7 @@ public class FitnessCalc {
 
     static int radius;
     static int enemyLimit;
+    static float hallwayProbability;
     
     /* Public methods */
     // Set a candidate solution as a byte array
@@ -26,6 +27,11 @@ public class FitnessCalc {
     public static void setEnemyLimit( int enem ){
     	enemyLimit = enem;
     }
+    
+    public static void setHallwayProbability(float hallwayProbability) {
+		FitnessCalc.hallwayProbability = hallwayProbability;
+	}
+    
     // To make it easier we can use this method to set our candidate solution 
     // with string of 0s and 1s
     static void setSolution(String newSolution) {

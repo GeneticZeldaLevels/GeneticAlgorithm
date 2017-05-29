@@ -124,8 +124,6 @@ public class Algorithm {
         for ( ; i < 11; i++) {
             if (Math.random() <= mutationRate) {
                 // Create random gene
-                byte gene = (byte) ( (Math.random() * 100) % 2 );
-
                 x_range = y_range = -1;
         		while( x_range < 0 || x_range > 31 ){
         			x_range = (byte) ( ((Math.random() * 100) % 9) - 4 );
@@ -137,9 +135,9 @@ public class Algorithm {
         		}
                 
                 e = null;
-                if( gene == 0 ){
+                if( Math.random() < FitnessCalc.hallwayProbability ){
                 	e = new Hallway( x_range, y_range );
-                }else if( gene == 1 ){
+                }else{
                 	e = new Room( x_range, y_range );
                 }
                 indiv.setElement(i, e);

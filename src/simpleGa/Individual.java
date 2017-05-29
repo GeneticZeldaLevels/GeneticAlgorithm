@@ -75,18 +75,18 @@ public class Individual {
     	
     	//Se añaden los demas elementos  
         for ( i = 1; i <= 10; i++) {
-            byte gene = (byte) ( (Math.random() * 100) % 2 );
-            if( gene == 0 ){
+            if( Math.random() < FitnessCalc.hallwayProbability ){
             	h = new Hallway( (byte) ( ((Math.random() * 100) % 2)+x_range ), (byte) ( ((Math.random() * 100) % 2)+y_range ) );
             	coded = h.codeChromosome();
             	elements.put( i, h );
             	this.graph = h.drawGraph( graph, (byte) (i+1) );
-            }else if( gene == 1 ){
+            }else{
             	r = new Room((byte) ( ((Math.random() * 100) % 2)+x_range ), (byte) ( ((Math.random() * 100) % 2)+y_range ));
             	coded = r.codeChromosome();
             	elements.put( i, r );
             	this.graph = r.drawGraph( graph, (byte) (i+1) );
             }
+                       
             x_range += x_step;
             y_range += y_step;
             addGeneToChromosome(coded);
