@@ -1,6 +1,7 @@
 package simpleGa;
 
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
 import java.io.PrintWriter;
 
 public class GA {
@@ -13,7 +14,7 @@ public class GA {
     		ind = new Individual();
     		ind.generateIndividual();
     		cont++;
-    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 && ind.getFitness() >= 0.6)
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 && ind.getFitness() <= 0.8 )
     			break;
     	}
     	

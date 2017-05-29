@@ -113,7 +113,7 @@ public class FitnessCalc {
 			}else{
 				disMax = xiL.get(x);
 			}
-			fx.add(x, Math.abs(xiL.get(x)-xrL.get(x))/(float)disMax);			
+			fx.add(x, -1 * (-1 + (Math.abs(xiL.get(x)-xrL.get(x))/(float)disMax)));			
 		}
 		
 		for (int x = 0; x < monsN; x++){
@@ -128,6 +128,8 @@ public class FitnessCalc {
 		
 		fxa = calculateAverage(fx);
 		fya = calculateAverage(fy);
+		
+
 				
 		return (fxa+fya)/2;
 	}
