@@ -13,6 +13,7 @@ public class FitnessCalc {
     static int radius;
     static int enemyLimit;
     static float hallwayProbability;
+    static int graphQuantity;
     
     /* Public methods */
     // Set a candidate solution as a byte array
@@ -30,6 +31,10 @@ public class FitnessCalc {
     
     public static void setHallwayProbability(float hallwayProbability) {
 		FitnessCalc.hallwayProbability = hallwayProbability;
+	}
+    
+    public static void setGraphQuantity(int graphQuantity) {
+		FitnessCalc.graphQuantity = graphQuantity;
 	}
     
     // To make it easier we can use this method to set our candidate solution 

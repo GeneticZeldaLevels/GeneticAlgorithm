@@ -74,7 +74,7 @@ public class Individual {
     	this.graph = elements.get(0).drawGraph( graph, (byte) 1 );
     	
     	//Se añaden los demas elementos  
-        for ( i = 1; i <= 10; i++) {
+        for ( i = 1; i <= FitnessCalc.graphQuantity; i++) {
             if( Math.random() < FitnessCalc.hallwayProbability ){
             	h = new Hallway( (byte) ( ((Math.random() * 100) % 2)+x_range ), (byte) ( ((Math.random() * 100) % 2)+y_range ) );
             	coded = h.codeChromosome();

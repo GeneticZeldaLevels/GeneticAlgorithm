@@ -68,6 +68,13 @@ public class Population {
     	individuals.add( indiv );
     }
     
+    public Individual removeIndividual( int index ){
+    	Individual individual;
+    	individual = individuals.get(index);
+    	individuals.remove(index);
+    	return individual;
+    }
+    
     public boolean isFactible(){
     	return factible;
     }

@@ -51,7 +51,7 @@ public class Algorithm {
 	            Individual indiv1 = tournamentSelection(pop);
 	            Individual indiv2 = tournamentSelection(pop);
 	            Individual newIndiv = crossover(indiv1, indiv2);
-	            newPopulation.pushIndividual( newIndiv);
+	            newPopulation.pushIndividual( newIndiv );
 	        }
         }
         
@@ -121,7 +121,7 @@ public class Algorithm {
         	indiv.setElement(i, e);
         }
     	i++;
-        for ( ; i < 11; i++) {
+        for ( ; i < FitnessCalc.graphQuantity+1; i++) {
             if (Math.random() <= mutationRate) {
                 // Create random gene
                 x_range = y_range = -1;

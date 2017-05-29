@@ -9,25 +9,8 @@ public class GA {
     	//Crea un individuo (cromosoma) aleatorio de 20 elementos 
     	FitnessCalc.setRadius(1);
     	FitnessCalc.setEnemyLimit(3);
-    	FitnessCalc.setHallwayProbability( (float) 0.8);
-    	
-    	/*Individual ind = new Individual();
-    	ind.generateIndividual();
-    	int cont = 0;
-    	while(true){
-    		ind = new Individual();
-    		ind.generateIndividual();
-    		cont++;
-    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
-    			break;
-    	}
-    	
-    	//Se trae la codificación del cromosoma
-    	String chrome = ind.toString();
-    	System.out.println(cont);
-    	//Se grafica el cromosoma
-    	GraphIndividual frame = new GraphIndividual(chrome);
-    	frame.runGraphic();*/
+    	FitnessCalc.setHallwayProbability( (float) 0.8 );
+    	FitnessCalc.setGraphQuantity( 8 );
     	
     	Population factibles = new Population( 50, true, true );
     	Population infactibles = new Population( 50, true, true );
@@ -43,6 +26,13 @@ public class GA {
         	factibles = Algorithm.evolvePopulation(factibles);
         	infactibles = Algorithm.evolvePopulation(infactibles);
         	actualFitness = factibles.getFittest().getFitness();
+        	
+        	for( int i = 0; i < infactibles.size(); i++ )
+        		if( infactibles.getIndividual(i).isFactible() ){
+        			factibles.pushIndividual( infactibles.removeIndividual(i) );
+        			//System.out.println("Si migra");
+        		}
+        		
         	System.out.println("Generation: " + generationCount + " Fittest: " + factibles.getFittest().getFitness());
         	if( lastFitness != actualFitness ){
         		repeatedFitness = 0;
@@ -98,3 +88,25 @@ writer.close();
 } catch (IOException e) {
 // do something
 }*/
+
+
+
+
+
+/*Individual ind = new Individual();
+ind.generateIndividual();
+int cont = 0;
+while(true){
+	ind = new Individual();
+	ind.generateIndividual();
+	cont++;
+	if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
+		break;
+}
+
+//Se trae la codificación del cromosoma
+String chrome = ind.toString();
+System.out.println(cont);
+//Se grafica el cromosoma
+GraphIndividual frame = new GraphIndividual(chrome);
+frame.runGraphic();*/
