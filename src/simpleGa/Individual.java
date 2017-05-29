@@ -12,10 +12,12 @@ public class Individual {
     private int fitness;
     private int chromosomeCnt;
     private byte[][] graph;
+    private boolean[][] monstersGraph;
     private HashMap< Integer, Element > elements;
     
     public Individual(){
     	graph = new byte[32][32];
+    	monstersGraph = new boolean[32][32];
     	this.chromosome = new ArrayList<Byte>();
     	//chromosome = new byte[defaultChromosomeLength];
     	fitness = 0;
@@ -113,11 +115,13 @@ public class Individual {
     	while(monstersQuantity-- >= 0){
     		byte quantity = (byte) ( ((Math.random() * 100) % 5) + 1 );
         	while( quantity-- > 0  ){
-        		m = new Monster( (byte) ( ((Math.random() * 100) % 5) + x_monster_init ), (byte) ( ((Math.random() * 100) % 5) + y_monster_init ) );
+        		byte x_monster = (byte) ( ((Math.random() * 100) % 5) + x_monster_init ), y_monster = (byte) ( ((Math.random() * 100) % 5) + y_monster_init );
+        		m = new Monster( x_monster , y_monster );
     			coded = m.codeChromosome();
     			elements.put( i, m );
     			addGeneToChromosome(coded);
     			i++;
+    			monstersGraph[x_monster][y_monster] = true;
         	}
         	x_monster_init += x_monster_step;
 			y_monster_init += y_monster_step;
@@ -141,7 +145,7 @@ public class Individual {
     	}
     }
     
-    public void printGraph(){
+    /*public void printGraph(){
     	for( byte i = 0; i < 32; i++ ){
     		for( byte j = 0; j < 32; j++ ){
     			String printed = ""+this.graph[i][j];
@@ -153,6 +157,18 @@ public class Individual {
     		System.out.println();
     	}
     }
+    
+    public void printMonstersGraph(){
+    	for( int i = 0; i < 32; i++ ){
+    		for( int j = 0; j < 32; j++ ){
+    			String printed = "";
+    			if( this.monstersGraph[j][i] == false ) printed = "0";
+    			else printed = "1";
+    			System.out.print(printed+" ");
+    		}
+    		System.out.println();
+    	}
+    }*/
     
     /* Getters and setters */
     // Use this if you want to create individuals with different gene lengths
@@ -206,12 +222,24 @@ public class Individual {
     	return FitnessCalc.getRunnableGraph(this);
     }
     
+    public boolean isFactible(){
+    	return ( getMonstersOutPlaced() == 0 && getRunnableGraph() == 0 );
+    }
+    
+    public void setElement( int index, Element element ){
+    	elements.put(index, element);
+    }
+    
     public Element getElement( int index ){
     	return elements.get(index);
     }
     
     public int checkInGraph( byte x, byte y ){
     	return this.graph[y][x];
+    }
+    
+    public boolean checkInMonstersGraph( byte x, byte y ){
+    	return this.monstersGraph[x][y];
     }
     
     public String toJSON(){
@@ -280,4 +308,23 @@ public class Individual {
         }
         return geneString;
     }
+
+	public void generateChromosome() {
+		byte[] coded;
+		Element e;
+		int roomCounter = 0;
+		
+		for( int i = 0; i < elementsSize(); i++ ){
+			e = elements.get(i);
+			//System.out.println(e);
+			coded = e.codeChromosome();
+            addGeneToChromosome(coded);
+            
+            if( e instanceof Hallway || e instanceof Room ){
+            	roomCounter++;
+            	this.graph = e.drawGraph( graph, (byte) (roomCounter+1) );
+            }else if( e instanceof Monster )
+            	monstersGraph[e.getX()][e.getY()] = true;
+		}
+	}
 }
