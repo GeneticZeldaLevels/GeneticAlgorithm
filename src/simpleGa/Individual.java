@@ -31,8 +31,40 @@ public class Individual {
     	byte[] coded;
     	int i = 0;
     	
+    	byte x_init = 0, y_init = 0, x_end = 0, y_end = 0;
+    	byte x_range = 0, y_range = 0, x_monster_range = 0, y_monster_range = 0;
+    	byte x_step = 0, y_step = 0;
+    	
+    	byte distribution = (byte) ( (Math.random() * 100) % 4 );
+    	
+    	if( distribution == 0 ){
+    		x_init = y_init = 0;
+    		x_end = y_end = 31;
+    		x_range = y_range = 3;
+    		x_step = y_step = 3;
+    	}else if( distribution == 1 ){
+    		x_init = y_end = 31;
+    		y_init = x_end = 0;
+    		x_range = 28;
+    		y_range = 3;
+    		x_step = -3;
+    		y_step = 3;
+    	}else if( distribution == 2 ){
+    		x_end = y_end = 0;
+    		x_init = y_init = 31;
+    		x_range = y_range = 28;
+    		x_step = y_step = -3;
+    	}else if( distribution == 3 ){
+    		x_init = y_end = 0;
+    		y_init = x_end = 31;
+    		x_range = 3;
+    		y_range = 28;
+    		x_step = 3;
+    		y_step = -3;
+    	}
+    	
     	//Se añade el cuarto donde debe iniciar
-    	r = new Room((byte) 0, (byte) 0);
+    	r = new Room(x_init, y_init);
     	//r = new Room();
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
@@ -40,29 +72,25 @@ public class Individual {
     	this.graph = elements.get(0).drawGraph( graph, (byte) 1 );
     	
     	//Se añaden los demas elementos  
-        for ( i = 1; i <= 18; i++) {
+        for ( i = 1; i <= 10; i++) {
             byte gene = (byte) ( (Math.random() * 100) % 2 );
             if( gene == 0 ){
-            	h = new Hallway();
+            	h = new Hallway( (byte) ( ((Math.random() * 100) % 2)+x_range ), (byte) ( ((Math.random() * 100) % 2)+y_range ) );
             	coded = h.codeChromosome();
             	elements.put( i, h );
             	this.graph = h.drawGraph( graph, (byte) (i+1) );
-            	//System.out.println("hallway - "+ h.getX() +" - "+h.getY()+" - "+h.getLength()+" - "+h.getDirection());
             }else if( gene == 1 ){
-            	r = new Room();
+            	r = new Room((byte) ( ((Math.random() * 100) % 2)+x_range ), (byte) ( ((Math.random() * 100) % 2)+y_range ));
             	coded = r.codeChromosome();
             	elements.put( i, r );
             	this.graph = r.drawGraph( graph, (byte) (i+1) );
-            	//System.out.println("room - "+ r.getX() +" - "+ r.getY() +" - "+r.getWidth()+" - "+ r.getBreadth() );
-            }else{
-            	m = new Monster();
-            	coded = m.codeChromosome();
-            	elements.put( i, m );
-            	//System.out.println("monster - "+ m.getX() +" - "+m.getY());
             }
+            x_range += x_step;
+            y_range += y_step;
             addGeneToChromosome(coded);
         }
-    	byte monstersQuantity = (byte) ( ((Math.random() * 100) % 10 ) + 10);
+        
+    	byte monstersQuantity = (byte) ( ((Math.random() * 100) % 5 ) + 10);
     	while(monstersQuantity-- >= 0){
     		m = new Monster();
         	coded = m.codeChromosome();
@@ -72,7 +100,7 @@ public class Individual {
     	}
     	
     	//Se añade el cuarto donde debe finalizar
-    	r = new Room((byte)31,(byte)31);
+    	r = new Room(x_end, y_end);
         //r = new Room();
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);

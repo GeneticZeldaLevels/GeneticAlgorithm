@@ -9,11 +9,25 @@ public class GA {
     	//Crea un individuo (cromosoma) aleatorio de 20 elementos 
     	Individual ind;
     	int cont = 0;
-    	while(true){
+    	/*int factCounter = 0;
+    	Individual[] factibles = new Individual[50]; 
+    	while(factCounter < 50){
     		ind = new Individual();
     		ind.generateIndividual();
     		cont++;
-    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 ){
+    			factibles[factCounter] = ind;
+    			factCounter++;
+    		}
+    	}
+    	System.out.println(cont);*/
+    	
+    	while(true){
+    		ind = new Individual();
+    		ind.generateIndividual();
+    		//System.out.println(ind.getMonstersOutPlaced());
+    		cont++;
+    		if( /*ind.getMonstersOutPlaced() == 0 &&*/ ind.getRunnableGraph() == 0 )
     			break;
     	}
     	System.out.println(cont);
@@ -25,13 +39,13 @@ public class GA {
     	GraphIndividual frame = new GraphIndividual(chrome);
     	frame.runGraphic();
 
-    	try{
+    	/*try{
     	    PrintWriter writer = new PrintWriter("map.json", "UTF-8");
     	    writer.println(ind.toJSON());
     	    writer.close();
     	} catch (IOException e) {
     	   // do something
-    	}
+    	}*/
     	
     	/*
         // Set a candidate solution

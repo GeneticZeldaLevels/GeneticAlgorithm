@@ -210,7 +210,7 @@ public class FitnessCalc {
     
     public static int getMonstersOutPlaced( Individual chromosome ){
     	int monstersOut = 0;
-    	for( int i = 19; i < chromosome.elementsSize(); i++ ){
+    	for( int i = 11; i < chromosome.elementsSize(); i++ ){
     		Element e = chromosome.getElement(i);
     		if( e instanceof Monster ){
     			//System.out.println(e.getX()+" - "+e.getY()+"	"+chromosome.checkInGraph( e.getX(), e.getY() ));
