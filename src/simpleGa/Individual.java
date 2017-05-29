@@ -9,7 +9,7 @@ public class Individual {
     static int defaultChromosomeLength = 400;
     private ArrayList<Byte> chromosome;
     // Cache
-    private int fitness;
+    private float fitness;
     private int chromosomeCnt;
     private byte[][] graph;
     private HashMap< Integer, Element > elements;
@@ -187,9 +187,9 @@ public class Individual {
         return chromosome.size();
     }
 
-    public int getFitness() {
+    public float getFitness() {
         if (fitness == 0) {
-            fitness = FitnessCalc.getFitness(this);
+            fitness = FitnessCalc.getFitness( this.toString() );
         }
         return fitness;
     }

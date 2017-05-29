@@ -1,6 +1,7 @@
 package simpleGa;
 
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
 import java.io.PrintWriter;
 
 public class GA {
@@ -26,13 +27,18 @@ public class GA {
     		ind = new Individual();
     		ind.generateIndividual();
     		cont++;
-    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 && ind.getFitness() <= 0.8 )
     			break;
     	}
+    	
     	System.out.println(cont);
+    	
+    	System.out.println(ind.getFitness());
     	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
+    	
+    	System.out.println( chrome );
     	
     	//Se grafica el cromosoma
     	GraphIndividual frame = new GraphIndividual(chrome);
