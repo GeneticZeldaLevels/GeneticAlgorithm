@@ -38,11 +38,12 @@ public class Algorithm {
 	            
 	            Individual newIndiv = crossover(indiv1, indiv2);
 	            
+	            newPopulation.pushIndividual( newIndiv);
+	            
 	            if( factibleCounter == 50 )
 	        		break;
 	            
 	        	if( newIndiv.isFactible() ){
-	            	newPopulation.pushIndividual( newIndiv);
 	            	factibleCounter++;
 	        	}
 	        }

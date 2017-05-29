@@ -23,16 +23,26 @@ public class GA {
         int generationCount = 0;
         while( repeatedFitness < generationLimit ){
         	generationCount++;
+        	System.out.print( factibles.size()+" - "+infactibles.size()+" ---------------- " );
+        	
         	factibles = Algorithm.evolvePopulation(factibles);
+        	
+        	for( int i = 0; i < factibles.size(); i++ )
+        		if( !factibles.getIndividual(i).isFactible() ){
+        			infactibles.pushIndividual( factibles.removeIndividual(i) );
+        		}
+        	
         	infactibles = Algorithm.evolvePopulation(infactibles);
-        	actualFitness = factibles.getFittest().getFitness();
         	
         	for( int i = 0; i < infactibles.size(); i++ )
         		if( infactibles.getIndividual(i).isFactible() ){
         			factibles.pushIndividual( infactibles.removeIndividual(i) );
-        			//System.out.println("Si migra");
         		}
-        		
+        	
+        	actualFitness = factibles.getFittest().getFitness();
+        	
+        	System.out.print( factibles.size()+" - "+infactibles.size() );
+        	System.out.println();
         	System.out.println("Generation: " + generationCount + " Fittest: " + factibles.getFittest().getFitness());
         	if( lastFitness != actualFitness ){
         		repeatedFitness = 0;
