@@ -13,13 +13,18 @@ public class GA {
     		ind = new Individual();
     		ind.generateIndividual();
     		cont++;
-    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
+    		if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 && ind.getFitness() >= 0.6)
     			break;
     	}
+    	
     	System.out.println(cont);
+    	
+    	System.out.println(ind.getFitness());
     	
     	//Se trae la codificación del cromosoma
     	String chrome = ind.toString();
+    	
+    	System.out.println( chrome );
     	
     	//Se grafica el cromosoma
     	GraphIndividual frame = new GraphIndividual(chrome);

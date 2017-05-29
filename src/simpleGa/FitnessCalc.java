@@ -2,6 +2,7 @@ package simpleGa;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
@@ -44,70 +45,103 @@ public class FitnessCalc {
         return fitness;
     }*/
     
-    static int getFitness(Individual chromosome){
-    	int fitness = 0;
-    	
-    	int runnable = 0;
-    	int notFounds = 0;
-    	
-    	boolean canRun = false;
-    	
-    	Room inicial = (Room) chromosome.getElement(0), terminal = (Room) chromosome.getElement( chromosome.elementsSize()-1 );
-    	List<Integer> founds = new ArrayList<Integer>();
-    	Queue< Pair<Byte> > q = new ArrayDeque<Pair<Byte>>();
-    	HashMap<Pair<Byte>, Integer> seen = new HashMap<Pair<Byte>, Integer>();
-    	Pair<Byte> actual, back;
-    	
-    	q.add( new Pair<Byte>(inicial.getX(), inicial.getY()) );
-    	seen.put(new Pair<Byte>(inicial.getX(), inicial.getY()), 1 );
-    	while( !q.isEmpty() ){
-    		actual = q.poll();
-    		
-    		if( !founds.contains( chromosome.checkInGraph( actual.getX(), actual.getY()) ) )
-    			founds.add( chromosome.checkInGraph( actual.getX(), actual.getY()) );
-    		
-    		if( actual.equals( new Pair<Byte>(terminal.getX(), terminal.getY()) ) ) canRun = true;
-    		
-    		//Arriba
-    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() - 1) );
-    		//System.out.println( seen.get( back ) == null );
-    		if( actual.getY() - 1 >= 0 && ( seen.get( back ) == null ) && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
-    			seen.put(back, 1);
-    			q.add( back );
-    		}
-    		
-    		//Derecha
-    		back = new Pair<Byte>( (byte)(actual.getX() + 1), actual.getY() );
-    		//System.out.println( seen.get( back ) == null );
-    		if( actual.getX() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
-    			seen.put(back, 1);
-    			q.add( back );
-    		}
-    		
-    		//Abajo
-    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() + 1) );
-    		//System.out.println( seen.get( back ) == null );
-    		if( actual.getY() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
-    			seen.put(back, 1);
-    			q.add( back );
-    		}
-    		
-    		//Left
-    		back = new Pair<Byte>( (byte)(actual.getX() - 1), actual.getY() );
-    		//System.out.println( seen.get( back ) == null );
-    		if( actual.getX() - 1 >= 0 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
-    			seen.put(back, 1);
-    			q.add( back );
-    		}
-    	}
-    	
-    	notFounds = chromosome.checkNotFounds( founds );
-    	if( !canRun ) notFounds += 100;
-    	
-    	
-    	
-    	return fitness;
-    }
+    public static float getFitness(String cromosoma){
+		
+		int i = 0;
+		int dimX = 31;
+		int dimY = 31;
+		int monsN, distance, disMax;
+		float sum, distFactor, fxa, fya;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		ArrayList<Integer> xrL = new ArrayList<>();
+		ArrayList<Integer> yrL = new ArrayList<>();
+		
+		ArrayList<Integer> xiL = new ArrayList<>();
+		ArrayList<Integer> yiL = new ArrayList<>();
+		
+		ArrayList<Float> fx = new ArrayList<>();
+		ArrayList<Float> fy = new ArrayList<>();
+		
+		while (i+2 < cromosoma.length()){
+			sb.setLength(0);
+			sb.append(cromosoma.charAt(i));
+			sb.append(cromosoma.charAt(i+1));
+			String id = sb.toString();
+			
+			if (id.equals("10") && i+11 < cromosoma.length()){
+				sb.setLength(0);
+				sb.append(cromosoma.charAt(i+2));
+				sb.append(cromosoma.charAt(i+3));
+				sb.append(cromosoma.charAt(i+4));
+				sb.append(cromosoma.charAt(i+5));
+				sb.append(cromosoma.charAt(i+6));
+				int xr = Integer.parseInt(sb.toString(), 2);
+				xrL.add(xr);
+				
+				sb.setLength(0);
+				sb.append(cromosoma.charAt(i+7));
+				sb.append(cromosoma.charAt(i+8));
+				sb.append(cromosoma.charAt(i+9));
+				sb.append(cromosoma.charAt(i+10));
+				sb.append(cromosoma.charAt(i+11));
+				int yr = Integer.parseInt(sb.toString(), 2);
+				yrL.add(yr);
+				i = i + 20;	
+			} else {
+				i = i + 20;
+			}
+		}
+		
+		monsN = xrL.size();
+		distFactor = ((float)dimX - (float)monsN) / ((float)monsN + 1);
+		sum = 0;
+		for (int j = 0; j < monsN; j++){
+			sum = sum + distFactor;
+			xiL.add(j, Math.round(sum));
+			yiL.add(j, Math.round(sum));
+			sum = sum + 1;			
+		}
+		Collections.sort(xrL);
+		Collections.sort(yrL);
+		
+		for (int x = 0; x < monsN; x++){
+			distance = dimX - xiL.get(x);
+			if (distance > xiL.get(x)){
+				disMax = distance;
+			}else{
+				disMax = xiL.get(x);
+			}
+			fx.add(x, Math.abs(xiL.get(x)-xrL.get(x))/(float)disMax);			
+		}
+		
+		for (int x = 0; x < monsN; x++){
+			distance = dimY - yiL.get(x);
+			if (distance > yiL.get(x)){
+				disMax = distance;
+			}else{
+				disMax = yiL.get(x);
+			}
+			fy.add(x, -1 * (-1 + (Math.abs(yiL.get(x)-yrL.get(x))/(float)disMax)));			
+		}
+		
+		fxa = calculateAverage(fx);
+		fya = calculateAverage(fy);
+				
+		return (fxa+fya)/2;
+	}
+	
+	public static Float calculateAverage(List<Float> marks) {
+		Float sum = (float) 0;
+		if(!marks.isEmpty()) {
+			for (Float mark : marks) {
+				sum += mark;
+			}
+			return (float) (sum.floatValue() / marks.size());
+		}
+		return sum;
+	}
     
     // Get optimum fitness
     static int getMaxFitness() {
