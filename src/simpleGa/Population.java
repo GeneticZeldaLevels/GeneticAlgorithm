@@ -75,6 +75,15 @@ public class Population {
     	return individual;
     }
     
+    public int getQuantityMaxFitness( int fitness ){
+    	int quantity = 0;
+    	for( int i = 0; i < individuals.size(); i++ ){
+    		if( individuals.get(i).getFitness() > fitness )
+    			quantity++;
+    	}
+    	return quantity;
+    }
+    
     public boolean isFactible(){
     	return factible;
     }

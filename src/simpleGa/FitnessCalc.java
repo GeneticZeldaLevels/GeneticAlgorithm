@@ -15,6 +15,9 @@ public class FitnessCalc {
     static int enemyLimit;
     static float hallwayProbability;
     static int graphQuantity;
+    static int fitnessFunction;
+    static int mapSize;
+    static int generationLimit;
     
     /* Public methods */
     // Set a candidate solution as a byte array
@@ -38,6 +41,13 @@ public class FitnessCalc {
 		FitnessCalc.graphQuantity = graphQuantity;
 	}
     
+    public static void setFitnessFunction(int fitnessFunction) {
+		FitnessCalc.fitnessFunction = fitnessFunction;
+	}
+    
+    public static void setMapSize( int mapSize ){
+    	FitnessCalc.mapSize = mapSize;
+    }
     // To make it easier we can use this method to set our candidate solution 
     // with string of 0s and 1s
     static void setSolution(String newSolution) {
@@ -69,19 +79,19 @@ public class FitnessCalc {
     		y_radius_plus += radius;
     		
     		for( byte i = x_radius_minus; i < x_radius_plus; i++ )
-    			if( i >= 0 && i <= 31 && y_radius_minus >= 0 && y_radius_minus <= 31 )
+    			if( i >= 0 && i <= 63 && y_radius_minus >= 0 && y_radius_minus <= 63 )
     				if( chromosome.checkInMonstersGraph(i, y_radius_minus) )
     					enemies++;
     		for( byte i = y_radius_minus; i < y_radius_plus; i++ )
-    			if( i >= 0 && i <= 31 && x_radius_plus >= 0 && x_radius_plus <= 31 )
+    			if( i >= 0 && i <= 63 && x_radius_plus >= 0 && x_radius_plus <= 63 )
     				if( chromosome.checkInMonstersGraph(x_radius_plus, i) )
     					enemies++;
     		for( byte i = x_radius_plus; i > x_radius_minus; i-- )
-    			if( i >= 0 && i <= 31 && y_radius_plus >= 0 && y_radius_plus <= 31 )
+    			if( i >= 0 && i <= 63 && y_radius_plus >= 0 && y_radius_plus <= 63 )
     				if( chromosome.checkInMonstersGraph( i, y_radius_plus) )
     					enemies++;
     		for( byte i = y_radius_plus; i > y_radius_minus; i-- )
-    			if( i >= 0 && i <= 31 && x_radius_minus >= 0 && x_radius_minus <= 31 )
+    			if( i >= 0 && i <= 63 && x_radius_minus >= 0 && x_radius_minus <= 63 )
     				if( chromosome.checkInMonstersGraph(x_radius_minus, i) )
     					enemies++;
     		
@@ -90,7 +100,7 @@ public class FitnessCalc {
     	return enemies;
     }
     
-    static int getFitness(Individual chromosome){
+    static int getFitnessADot(Individual chromosome){
     	int fitness = 0, enemy, steps = 0;
     	
     	boolean canRun = false;
@@ -105,6 +115,10 @@ public class FitnessCalc {
     	enemy = checkDifficulty(chromosome, inicial.getX(), inicial.getY(), radius);
     	if( enemy > enemyLimit ) fitness += enemy * -1;
 		else fitness += enemy;
+    	
+    	int stillRoom = 0;
+    	int stillHallway = 0;
+    	int noMonster = 0;
     	seen.put(new Pair<Byte>(inicial.getX(), inicial.getY()), 1 );
     	while( !q.isEmpty() ){
     		actual = q.poll();
@@ -113,7 +127,23 @@ public class FitnessCalc {
     			canRun = true;
     			break;
     		}
-    		//steps++;
+    		
+    		if( chromosome.checkInGraph(actual.getX(), actual.getY()) == 2 ){
+    			stillRoom++;
+    			stillHallway = 0;
+    		}else if(chromosome.checkInGraph(actual.getX(), actual.getY()) == 3){
+    			stillRoom = 0;
+    			stillHallway++;
+    		}
+    		
+    		if( stillRoom > 15 )
+    			//fitness--;
+    		if( stillHallway == 2 ){
+    			fitness++;
+    			stillHallway = 0;
+    		}
+    		
+    		
     		//Arriba
     		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() - 1) );
     		if( actual.getY() - 1 >= 0 && ( seen.get( back ) == null ) && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
@@ -131,7 +161,7 @@ public class FitnessCalc {
     		
     		//Derecha
     		back = new Pair<Byte>( (byte)(actual.getX() + 1), actual.getY() );
-    		if( actual.getX() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    		if( actual.getX() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
     			enemy = checkDifficulty(chromosome, back.getX(), back.getY(), radius);
     			if( enemy > enemyLimit ){
     				fitness += enemy * -1;
@@ -146,7 +176,7 @@ public class FitnessCalc {
     		
     		//Abajo
     		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() + 1) );
-    		if( actual.getY() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    		if( actual.getY() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
     			enemy = checkDifficulty(chromosome, back.getX(), back.getY(), radius);
     			if( enemy > enemyLimit ){
     				fitness += enemy * -1;
@@ -179,8 +209,7 @@ public class FitnessCalc {
     }
 
 	// Get optimum fitness
-    public static float getFitness(String cromosoma){
-		
+    public static float getFitnessRowsColumns(String cromosoma){
 		int i = 0;
 		int dimX = 31;
 		int dimY = 31;
@@ -426,7 +455,7 @@ public class FitnessCalc {
     		//Derecha
     		back = new Pair<Byte>( (byte)(actual.getX() + 1), actual.getY() );
     		//System.out.println( seen.get( back ) == null );
-    		if( actual.getX() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    		if( actual.getX() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
     			seen.put(back, 1);
     			q.add( back );
     		}
@@ -434,7 +463,7 @@ public class FitnessCalc {
     		//Abajo
     		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() + 1) );
     		//System.out.println( seen.get( back ) == null );
-    		if( actual.getY() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    		if( actual.getY() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
     			seen.put(back, 1);
     			q.add( back );
     		}

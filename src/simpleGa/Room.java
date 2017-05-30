@@ -100,7 +100,7 @@ public class Room extends Element {
 		
 		for( byte i = y_from; i <= y_to; i++ )
 			for( byte j = x_from; j <= x_to; j++ )
-				if( ( i >= 0 && i <= 31  ) && ( j >= 0 && j <= 31 ) )
+				if( ( i >= 0 && i <= 63 ) && ( j >= 0 && j <= 63 ) )
 					graph[i][j] = elementIndex;
 		return graph;
 	}
