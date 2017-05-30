@@ -1,6 +1,7 @@
 package simpleGa;
 
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
 import java.io.PrintWriter;
 
 public class GA {
@@ -84,7 +85,7 @@ if( ind.getMonstersOutPlaced() == 0 && ind.getRunnableGraph() == 0 )
 System.out.println(ind.getFitness());*/
 
 
-//Se trae la codificación del cromosoma
+//Se trae la codificaciï¿½n del cromosoma
 /*String chrome = ind.toString();
 
 //Se grafica el cromosoma
@@ -114,7 +115,7 @@ while(true){
 		break;
 }
 
-//Se trae la codificación del cromosoma
+//Se trae la codificaciï¿½n del cromosoma
 String chrome = ind.toString();
 System.out.println(cont);
 //Se grafica el cromosoma
