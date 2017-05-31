@@ -13,7 +13,7 @@ import javax.swing.border.EmptyBorder;
 
 public class GraphIndividual extends JFrame {
 	private JPanel contentPane;
-	private String chromosome;
+	private Individual chromosome;
 	
 	private Room inicial;
 	private Room terminal;
@@ -44,37 +44,29 @@ public class GraphIndividual extends JFrame {
     }
     
     public void evalChromosome(){
-    	String gene;
+    	Element gene;
     	
-    	//Se saca el cuarto inicial
-    	inicial = FitnessCalc.geneToRoom( chromosome.substring( 0, 20 ) );
-    	
-    	//Se calcula el resto de elementos
-    	int i = 20;
-    	for( ; i < chromosome.length()-20; i += 20 ){
-    		 gene = chromosome.substring( i, i+20 );
-    		 if( gene.charAt(0) == '0' && gene.charAt(1) == '0' ){
-    			 halls.add( FitnessCalc.geneToHallway(gene) );
-    			 //System.out.println("hallway - "+ x +" - "+y+" - "+length+" - "+direction);
-    		 }else if( gene.charAt(0) == '0' && gene.charAt(1) == '1' ){
-    			 rooms.add( FitnessCalc.geneToRoom(gene) );
-    			 //System.out.println("room - "+ x +" - "+y+" - "+width+" - "+breadth);
-    		 }else if( gene.charAt(0) == '1' && gene.charAt(1) == '0' ){
-    			 monsters.add( FitnessCalc.geneToMonster(gene) );
-    			 //System.out.println("monster - "+ x +" - "+y);
-    		 }
+    	inicial = (Room) chromosome.getElement(0);
+    	for( int i = 1; i < chromosome.elementsSize()-1; i++  ){
+    		gene = chromosome.getElement(i);
+    		if( gene instanceof Hallway ){
+    			halls.add( (Hallway) gene );
+    		}else if( gene instanceof Room ){
+    			rooms.add( (Room) gene );
+    		}else if( gene instanceof Monster ){
+    			monsters.add( (Monster) gene );
+    		}
     	}
     	
-    	//Se saca el cuarto terminal
-    	terminal = FitnessCalc.geneToRoom( chromosome.substring( i, i+20 ) );
+    	terminal = (Room) chromosome.getElement( chromosome.elementsSize()-1 );
     }
 
     /**
      * Create the frame.
      */
-    public GraphIndividual( String chrome ) {
-    	this.chromosome = chrome;
-    	this.cellSize = 17;
+    public GraphIndividual( Individual individual ) {
+    	this.chromosome = individual;
+    	this.cellSize = 10;
     	halls = new ArrayList<Hallway>();
     	rooms = new ArrayList<Room>();
     	monsters = new ArrayList<Monster>();
@@ -135,8 +127,8 @@ public class GraphIndividual extends JFrame {
         for( int i = 0; i < nums.length; i++ ){
         	g.drawString(nums[i], x, i*this.cellSize + y);
         }
-        for( int i = 1; i <= 32; i++ ){
-        	for( int j = 1; j <= 32; j++ ){
+        for( int i = 1; i <= 64; i++ ){
+        	for( int j = 1; j <= 64; j++ ){
         		g.setColor (Color.black);
         		g.fillRect ((i*this.cellSize)+50, (j*this.cellSize)+50, this.cellSize, this.cellSize);
         		g.setColor (Color.white);
@@ -144,31 +136,24 @@ public class GraphIndividual extends JFrame {
         	}
         }
         
-        g.setColor(new Color(100, 100, 100));
+        g.setColor(new Color(100, 100, 100, 200));
         paintRoom( inicial, g );
         g.drawString("A", inicial.getX(), inicial.getY());
         
-        /*int counter = 0;
-        for( int i = 0; i < rooms.size(); i++ ){
-        	g.setColor(new Color(150, 0, counter));
-        	paintRoom( rooms.get(i), g );
-        	counter += 25;
-        }*/
-        
-        g.setColor(Color.green);
+        g.setColor(new Color(0, 255, 0, 200));
         for( int i = 0; i < rooms.size(); i++ )
         	paintRoom( rooms.get(i), g );
         
         
-        g.setColor(Color.red);
+        g.setColor(new Color(255, 0, 0, 200));
         for( int i = 0; i < halls.size(); i++ )
         	paintHall(halls.get(i), g);
         
-        g.setColor(Color.yellow);
+        g.setColor(new Color(255, 255, 0, 200));
         paintRoom( terminal, g );
         g.drawString("B", terminal.getX(), terminal.getY());
         
-        g.setColor(Color.blue);
+        g.setColor(new Color(0, 0, 255, 200));
         for( int i = 0; i < monsters.size(); i++ )
         	paintMonster( monsters.get(i), g );
     }

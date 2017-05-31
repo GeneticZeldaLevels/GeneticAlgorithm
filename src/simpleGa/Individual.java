@@ -7,16 +7,19 @@ import java.util.List;
 public class Individual {
 
     static int defaultChromosomeLength = 400;
-    private byte[] chromosome;
+    private ArrayList<Byte> chromosome;
     // Cache
     private int fitness;
     private int chromosomeCnt;
     private byte[][] graph;
+    private boolean[][] monstersGraph;
     private HashMap< Integer, Element > elements;
     
     public Individual(){
-    	graph = new byte[32][32];
-    	chromosome = new byte[defaultChromosomeLength];
+    	graph = new byte[FitnessCalc.mapSize][FitnessCalc.mapSize];
+    	monstersGraph = new boolean[FitnessCalc.mapSize][FitnessCalc.mapSize];
+    	this.chromosome = new ArrayList<Byte>();
+    	//chromosome = new byte[defaultChromosomeLength];
     	fitness = 0;
     	chromosomeCnt = 0;
     	elements = new HashMap<Integer, Element >();
@@ -30,55 +33,127 @@ public class Individual {
     	byte[] coded;
     	int i = 0;
     	
+    	byte x_init = 0, y_init = 0;
+    	byte x_range = 0, y_range = 0, x_monster_init = 0, y_monster_init = 0;
+    	byte x_step = 0, y_step = 0, x_monster_step = 0, y_monster_step = 0;
+    	
+    	byte distribution = (byte) ( (Math.random() * 100) % 4 );
+    	distribution = 0;
+    	if( distribution == 0 ){
+    		x_init = y_init = 0;
+    		x_step = y_step = 8;
+    	}else if( distribution == 1 ){
+    		x_init  = 63;
+    		y_init = 0;
+    		x_step = -8;
+    		y_step = 8;
+    	}else if( distribution == 2 ){
+    		x_init = y_init = 63;
+    		x_step = y_step = -10;
+    	}else if( distribution == 3 ){
+    		x_init =  0;
+    		y_init = 63;
+    		x_step = 8;
+    		y_step = -8;
+    	}
+    	
     	//Se añade el cuarto donde debe iniciar
-    	r = new Room((byte) 0, (byte) 0);
+    	r = new Room((byte)0, (byte)0);
     	//r = new Room();
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
     	elements.put( i, r );
     	this.graph = elements.get(0).drawGraph( graph, (byte) 1 );
     	
+    	int type = 0;
     	//Se añaden los demas elementos  
-        for ( i = 1; i <= 18; i++) {
-            byte gene = (byte) ( (Math.random() * 100) % 3 );
-            if( gene == 0 ){
-            	h = new Hallway();
-            	coded = h.codeChromosome();
-            	elements.put( i, h );
-            	this.graph = h.drawGraph( graph, (byte) (i+1) );
-            	//System.out.println("hallway - "+ h.getX() +" - "+h.getY()+" - "+h.getLength()+" - "+h.getDirection());
-            }else if( gene == 1 ){
-            	r = new Room();
-            	coded = r.codeChromosome();
-            	elements.put( i, r );
-            	this.graph = r.drawGraph( graph, (byte) (i+1) );
-            	//System.out.println("room - "+ r.getX() +" - "+ r.getY() +" - "+r.getWidth()+" - "+ r.getBreadth() );
+        for ( i = 0; i < FitnessCalc.graphQuantity; i++) {
+        	Element gene;
+        	if( (i+1) % 3 == 0 ){
+        		x_init += x_step;
+        		y_init += y_step;
+        	}
+            if( Math.random() < FitnessCalc.hallwayProbability ){
+            	type = 2;
+            	gene = new Hallway( (byte) ( ((Math.random() * 100) % x_step)+x_init ), (byte) ( ((Math.random() * 100) % y_step)+y_init ) );
             }else{
-            	m = new Monster();
-            	coded = m.codeChromosome();
-            	elements.put( i, m );
-            	//System.out.println("monster - "+ m.getX() +" - "+m.getY());
+            	type = 3;
+            	gene = new Room((byte) ( ((Math.random() * 100) % x_step)+x_init ), (byte) ( ((Math.random() * 100) % y_step)+y_init ));
             }
+            coded = gene.codeChromosome();
+        	elements.put( i+1, gene );
+        	this.graph = gene.drawGraph( graph, (byte) (type) );
+        	
+        	//System.out.println( gene.getX()+" - "+gene.getY() );
+        	
+            //x_range += x_step;
+            //y_range += y_step;
             addGeneToChromosome(coded);
         }
         
-        //Se añade el cuarto donde debe finalizar
-    	r = new Room((byte)31,(byte)31);
+        
+    	byte monstersQuantity = 6;
+    	if( distribution == 0 ){
+    		x_monster_init = y_monster_init = 0;
+    		x_monster_step = 8;
+    		y_monster_step = 8;
+    	}else if( distribution == 1 ){
+    		x_monster_init = 57;
+    		y_monster_init = 0;
+    		x_monster_step = -8;
+    		y_monster_step = 8;
+    	}else if( distribution == 2 ){
+    		x_monster_init = y_monster_init = 57;
+    		x_monster_step = -8;
+    		y_monster_step = -8;
+    	}else if( distribution == 3 ){
+    		x_monster_init = 0;
+    		y_monster_init = 57;
+    		x_monster_step = 8;
+    		y_monster_step = -8;
+    	}
+    	int monsterLimit = 45, monsterCounter = 0;
+    	while(monstersQuantity-- >= 0 && monsterCounter <= monsterLimit ){
+    		
+    		byte quantity = (byte) ( ((Math.random() * 100) % 5) + 1 );
+        	while( quantity-- > 0 ){
+        		byte x_monster = -1, y_monster = -1;
+        		while( x_monster < 0 || x_monster > 63 )
+        			x_monster = (byte) ( ((Math.random() * 100) % x_monster_step) + x_monster_init );
+        		while( y_monster < 0 || y_monster > 63 )
+        			y_monster = (byte) ( ((Math.random() * 100) % y_monster_step) + y_monster_init );
+        		m = new Monster( x_monster , y_monster );
+    			coded = m.codeChromosome();
+    			elements.put( i, m );
+    			addGeneToChromosome(coded);
+    			i++;
+    			monstersGraph[x_monster][y_monster] = true;
+    			monsterCounter++;
+        	}
+        	
+        	x_monster_init += x_monster_step;
+			y_monster_init += y_monster_step;
+    	}
+    	
+    	//Se añade el cuarto donde debe finalizar
+    	r = new Room((byte)63, (byte)63);
         //r = new Room();
     	coded = r.codeChromosome();
     	addGeneToChromosome(coded);
     	elements.put( i, r );
-    	graph = elements.get(19).drawGraph( graph, (byte)20 );
+    	graph = elements.get(elementsSize()-1).drawGraph( graph, (byte)20 );
+    	i++;
     }
     
     private void addGeneToChromosome( byte[] gene ){
     	for( int j = 0; j < gene.length; j++ ){
-    		this.chromosome[this.chromosomeCnt] = gene[j];
+    		this.chromosome.add(gene[j]);
+    		//this.chromosome[this.chromosomeCnt] = gene[j];
     		this.chromosomeCnt++;
     	}
     }
     
-    public void printGraph(){
+    /*public void printGraph(){
     	for( byte i = 0; i < 32; i++ ){
     		for( byte j = 0; j < 32; j++ ){
     			String printed = ""+this.graph[i][j];
@@ -91,6 +166,18 @@ public class Individual {
     	}
     }
     
+    public void printMonstersGraph(){
+    	for( int i = 0; i < 32; i++ ){
+    		for( int j = 0; j < 32; j++ ){
+    			String printed = "";
+    			if( this.monstersGraph[j][i] == false ) printed = "0";
+    			else printed = "1";
+    			System.out.print(printed+" ");
+    		}
+    		System.out.println();
+    	}
+    }*/
+    
     /* Getters and setters */
     // Use this if you want to create individuals with different gene lengths
     public static void setDefaultChromosomeLength(int length) {
@@ -98,11 +185,11 @@ public class Individual {
     }
     
     public byte getGene(int index) {
-        return chromosome[index];
+        return chromosome.get(index);
     }
 
     public void setGene(int index, byte value) {
-        chromosome[index] = value;
+        chromosome.set(index, value);
         fitness = 0;
     }
 
@@ -121,12 +208,15 @@ public class Individual {
     }
     
     public int size() {
-        return chromosome.length;
+        return chromosome.size();
     }
 
     public int getFitness() {
         if (fitness == 0) {
-            fitness = FitnessCalc.getFitness(this);
+        	if( FitnessCalc.fitnessFunction== 0 )
+            	fitness = FitnessCalc.getFitnessADot( this );
+        	else
+        		fitness = (int) (FitnessCalc.getFitnessRowsColumns( this.toString() ) * 100);
         }
         return fitness;
     }
@@ -143,12 +233,24 @@ public class Individual {
     	return FitnessCalc.getRunnableGraph(this);
     }
     
+    public boolean isFactible(){
+    	return ( getMonstersOutPlaced() == 0 && getRunnableGraph() <= 25 );
+    }
+    
+    public void setElement( int index, Element element ){
+    	elements.put(index, element);
+    }
+    
     public Element getElement( int index ){
     	return elements.get(index);
     }
     
     public int checkInGraph( byte x, byte y ){
     	return this.graph[y][x];
+    }
+    
+    public boolean checkInMonstersGraph( byte x, byte y ){
+    	return this.monstersGraph[x][y];
     }
     
     public String toJSON(){
@@ -217,4 +319,22 @@ public class Individual {
         }
         return geneString;
     }
+
+	public void generateChromosome() {
+		byte[] coded;
+		Element e;
+		int roomCounter = 0;
+		
+		for( int i = 0; i < elementsSize(); i++ ){
+			e = elements.get(i);
+			coded = e.codeChromosome();
+            addGeneToChromosome(coded);
+            
+            if( e instanceof Hallway || e instanceof Room ){
+            	roomCounter++;
+            	this.graph = e.drawGraph( graph, (byte) (roomCounter+1) );
+            }else if( e instanceof Monster )
+            	monstersGraph[e.getX()][e.getY()] = true;
+		}
+	}
 }

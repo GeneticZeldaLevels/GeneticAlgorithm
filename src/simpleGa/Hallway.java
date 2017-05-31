@@ -35,6 +35,23 @@ public class Hallway extends Element {
 		}
 	}
 	
+	//Constructor que recibe paremetros
+	public Hallway( byte x, byte y ){
+		this.x = x;
+		this.y = y;
+		
+		this.length = 1;
+		while( this.length < 3 ){
+			this.length = (byte) ( ( Math.random() * 100 ) % 16);
+			if( this.length % 2 != 0){
+				if( this.length > 7 ) this.length--;
+				else this.length++;
+			}
+		}
+		
+		this.direction = (byte) Math.round(Math.random());
+	}
+	
 	//Funcion para codificar el gen a cadena binaria de 24 digitos
 	public byte[] codeChromosome(){
 		byte[] gene = new byte[20], a;
@@ -63,22 +80,6 @@ public class Hallway extends Element {
 		return gene;
 	}
 	
-	/*int init_x = hall.getX()+1, init_y = hall.getY()+1;
-	if( hall.getDirection() == 0 ){
-		init_x -= (byte)(hall.getLength()/2);
-		int end_x = init_x + hall.getLength();
-		for( int j = init_x; j <= end_x; j++ ){
-			g.fillRect ( j*this.cellSize+50, init_y*this.cellSize+50, this.cellSize, this.cellSize);
-		}
-	}else if( hall.getDirection() == 1 ){
-		init_y -= (byte)(hall.getLength()/2);
-		int end_y = init_y + hall.getLength();
-		for( int j = init_y; j <= end_y; j++ ){
-			g.fillRect ( init_x*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
-		}
-	}*/
-	
-	
 	//Funcion que recibe un byte[][] como grafo y dibuja su posición
 	public byte[][] drawGraph( byte[][] graph, byte elementIndex ){	
 		int init_x = this.getX(), init_y = this.getY();
@@ -86,17 +87,18 @@ public class Hallway extends Element {
 			init_x -= (byte)(this.getLength()/2);
 			int end_x = init_x + this.getLength();
 			for( int j = init_x; j <= end_x; j++ ){
-				//g.fillRect ( j*this.cellSize+50, init_y*this.cellSize+50, this.cellSize, this.cellSize);
-				if( ( j >= 0 && j <= 31  ) && ( init_y >= 0 && init_y <= 31 ) )
-					graph[init_y][j] = elementIndex;
+				if( ( j >= 0 && j <= 63  ) && ( init_y >= 0 && init_y <= 63 ) )
+					if( graph[init_y][j] != 2 )
+						graph[init_y][j] = elementIndex;
+				
 			}
 		}else if( this.getDirection() == 1 ){
 			init_y -= (byte)(this.getLength()/2);
 			int end_y = init_y + this.getLength();
 			for( int j = init_y; j <= end_y; j++ ){
-				//g.fillRect ( init_x*this.cellSize+50, j*this.cellSize+50, this.cellSize, this.cellSize);
-				if( ( j >= 0 && j <= 31  ) && ( init_y >= 0 && init_y <= 31 ) )
-					graph[j][init_x] = elementIndex;
+				if( ( j >= 0 && j <= 63  ) && ( init_x >= 0 && init_x <= 63 ) )
+					if( graph[j][init_x] != 2 )
+						graph[j][init_x] = elementIndex;
 			}
 		}
 		return graph;

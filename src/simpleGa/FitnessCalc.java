@@ -2,6 +2,7 @@ package simpleGa;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
@@ -10,12 +11,43 @@ public class FitnessCalc {
 
     static byte[] solution = new byte[64];
 
+    static int radius;
+    static int enemyLimit;
+    static float hallwayProbability;
+    static int graphQuantity;
+    static int fitnessFunction;
+    static int mapSize;
+    static int generationLimit;
+    
     /* Public methods */
     // Set a candidate solution as a byte array
     public static void setSolution(byte[] newSolution) {
         solution = newSolution;
     }
 
+    public static void setRadius( int rad ){
+    	radius = rad;
+    }
+    
+    public static void setEnemyLimit( int enem ){
+    	enemyLimit = enem;
+    }
+    
+    public static void setHallwayProbability(float hallwayProbability) {
+		FitnessCalc.hallwayProbability = hallwayProbability;
+	}
+    
+    public static void setGraphQuantity(int graphQuantity) {
+		FitnessCalc.graphQuantity = graphQuantity;
+	}
+    
+    public static void setFitnessFunction(int fitnessFunction) {
+		FitnessCalc.fitnessFunction = fitnessFunction;
+	}
+    
+    public static void setMapSize( int mapSize ){
+    	FitnessCalc.mapSize = mapSize;
+    }
     // To make it easier we can use this method to set our candidate solution 
     // with string of 0s and 1s
     static void setSolution(String newSolution) {
@@ -31,18 +63,250 @@ public class FitnessCalc {
             }
         }
     }
-
-    // Calculate inidividuals fittness by comparing it to our candidate solution
-    static int getFitness(Individual individual) {
-        int fitness = 0;
-        // Loop through our individuals genes and compare them to our cadidates
-        for (int i = 0; i < individual.size() && i < solution.length; i++) {
-            if (individual.getGene(i) == solution[i]) {
-                fitness++;
-            }
-        }
-        return fitness;
+    
+    static int checkDifficulty( Individual chromosome, Byte x, Byte y, int radius ){
+    	int enemies = 0;
+    	byte x_radius_minus, x_radius_plus;
+    	byte y_radius_minus, y_radius_plus;
+    	
+    	while( radius > 0 ){
+    		x_radius_minus = x_radius_plus = x;    		
+    		y_radius_minus = y_radius_plus = y;
+    		
+    		x_radius_minus -= radius;
+    		x_radius_plus += radius;
+    		y_radius_minus -= radius;
+    		y_radius_plus += radius;
+    		
+    		for( byte i = x_radius_minus; i < x_radius_plus; i++ )
+    			if( i >= 0 && i <= 63 && y_radius_minus >= 0 && y_radius_minus <= 63 )
+    				if( chromosome.checkInMonstersGraph(i, y_radius_minus) )
+    					enemies++;
+    		for( byte i = y_radius_minus; i < y_radius_plus; i++ )
+    			if( i >= 0 && i <= 63 && x_radius_plus >= 0 && x_radius_plus <= 63 )
+    				if( chromosome.checkInMonstersGraph(x_radius_plus, i) )
+    					enemies++;
+    		for( byte i = x_radius_plus; i > x_radius_minus; i-- )
+    			if( i >= 0 && i <= 63 && y_radius_plus >= 0 && y_radius_plus <= 63 )
+    				if( chromosome.checkInMonstersGraph( i, y_radius_plus) )
+    					enemies++;
+    		for( byte i = y_radius_plus; i > y_radius_minus; i-- )
+    			if( i >= 0 && i <= 63 && x_radius_minus >= 0 && x_radius_minus <= 63 )
+    				if( chromosome.checkInMonstersGraph(x_radius_minus, i) )
+    					enemies++;
+    		
+    		radius--;
+    	}
+    	return enemies;
     }
+    
+    static int getFitnessADot(Individual chromosome){
+    	int fitness = 0, enemy, steps = 0;
+    	
+    	boolean canRun = false;
+    	
+    	Room inicial = (Room) chromosome.getElement(0), terminal = (Room) chromosome.getElement( chromosome.elementsSize()-1 );
+    	
+    	Queue< Pair<Byte> > q = new ArrayDeque<Pair<Byte>>();
+    	HashMap<Pair<Byte>, Integer> seen = new HashMap<Pair<Byte>, Integer>();
+    	Pair<Byte> actual, back;
+    	
+    	q.add( new Pair<Byte>(inicial.getX(), inicial.getY()) );
+    	enemy = checkDifficulty(chromosome, inicial.getX(), inicial.getY(), radius);
+    	if( enemy > enemyLimit ) fitness += enemy * -1;
+		else fitness += enemy;
+    	
+    	int stillRoom = 0;
+    	int stillHallway = 0;
+    	int noMonster = 0;
+    	seen.put(new Pair<Byte>(inicial.getX(), inicial.getY()), 1 );
+    	while( !q.isEmpty() ){
+    		actual = q.poll();
+    		
+    		if( actual.equals( new Pair<Byte>(terminal.getX(), terminal.getY()) ) ){
+    			canRun = true;
+    			break;
+    		}
+    		
+    		if( chromosome.checkInGraph(actual.getX(), actual.getY()) == 2 ){
+    			stillRoom++;
+    			stillHallway = 0;
+    		}else if(chromosome.checkInGraph(actual.getX(), actual.getY()) == 3){
+    			stillRoom = 0;
+    			stillHallway++;
+    		}
+    		
+    		if( stillRoom > 15 )
+    			//fitness--;
+    		if( stillHallway == 2 ){
+    			fitness++;
+    			stillHallway = 0;
+    		}
+    		
+    		
+    		//Arriba
+    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() - 1) );
+    		if( actual.getY() - 1 >= 0 && ( seen.get( back ) == null ) && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			enemy = checkDifficulty(chromosome, back.getX(), back.getY(), radius);
+    			if( enemy > enemyLimit ){
+    				fitness += enemy * -1;
+    			}
+    			else{ 
+    				fitness += enemy;
+    				q.add( back );
+    			}
+    			seen.put(back, enemy);
+    			
+    		}
+    		
+    		//Derecha
+    		back = new Pair<Byte>( (byte)(actual.getX() + 1), actual.getY() );
+    		if( actual.getX() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			enemy = checkDifficulty(chromosome, back.getX(), back.getY(), radius);
+    			if( enemy > enemyLimit ){
+    				fitness += enemy * -1;
+    			}
+    			else{
+    				fitness += enemy;
+    				q.add( back );
+    			}
+    			seen.put(back, enemy);
+    			
+    		}
+    		
+    		//Abajo
+    		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() + 1) );
+    		if( actual.getY() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			enemy = checkDifficulty(chromosome, back.getX(), back.getY(), radius);
+    			if( enemy > enemyLimit ){
+    				fitness += enemy * -1;
+    			}
+    			else{
+    				fitness += enemy;
+    				q.add( back );
+    			}
+    			seen.put(back, enemy );
+    			
+    		}
+    		
+    		//Left
+    		back = new Pair<Byte>( (byte)(actual.getX() - 1), actual.getY() );
+    		if( actual.getX() - 1 >= 0 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    			enemy = checkDifficulty(chromosome, back.getX(), back.getY(), radius);
+    			if( enemy > enemyLimit ){
+    				fitness += enemy * -1;
+    			}
+    			else{
+    				fitness += enemy;
+    				q.add( back );
+    			}
+    			seen.put(back, enemy);
+    			
+    		}
+    	}
+    	//System.out.println("steps: "+steps);
+    	return fitness;
+    }
+
+	// Get optimum fitness
+    public static float getFitnessRowsColumns(String cromosoma){
+		int i = 0;
+		int dimX = 31;
+		int dimY = 31;
+		int monsN, distance, disMax;
+		float sum, distFactor, fxa, fya;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		ArrayList<Integer> xrL = new ArrayList<>();
+		ArrayList<Integer> yrL = new ArrayList<>();
+		
+		ArrayList<Integer> xiL = new ArrayList<>();
+		ArrayList<Integer> yiL = new ArrayList<>();
+		
+		ArrayList<Float> fx = new ArrayList<>();
+		ArrayList<Float> fy = new ArrayList<>();
+		
+		while (i+2 < cromosoma.length()){
+			sb.setLength(0);
+			sb.append(cromosoma.charAt(i));
+			sb.append(cromosoma.charAt(i+1));
+			String id = sb.toString();
+			
+			if (id.equals("10") && i+11 < cromosoma.length()){
+				sb.setLength(0);
+				sb.append(cromosoma.charAt(i+2));
+				sb.append(cromosoma.charAt(i+3));
+				sb.append(cromosoma.charAt(i+4));
+				sb.append(cromosoma.charAt(i+5));
+				sb.append(cromosoma.charAt(i+6));
+				int xr = Integer.parseInt(sb.toString(), 2);
+				xrL.add(xr);
+				
+				sb.setLength(0);
+				sb.append(cromosoma.charAt(i+7));
+				sb.append(cromosoma.charAt(i+8));
+				sb.append(cromosoma.charAt(i+9));
+				sb.append(cromosoma.charAt(i+10));
+				sb.append(cromosoma.charAt(i+11));
+				int yr = Integer.parseInt(sb.toString(), 2);
+				yrL.add(yr);
+				i = i + 20;	
+			} else {
+				i = i + 20;
+			}
+		}
+		
+		monsN = xrL.size();
+		distFactor = ((float)dimX - (float)monsN) / ((float)monsN + 1);
+		sum = 0;
+		for (int j = 0; j < monsN; j++){
+			sum = sum + distFactor;
+			xiL.add(j, Math.round(sum));
+			yiL.add(j, Math.round(sum));
+			sum = sum + 1;			
+		}
+		Collections.sort(xrL);
+		Collections.sort(yrL);
+		
+		for (int x = 0; x < monsN; x++){
+			distance = dimX - xiL.get(x);
+			if (distance > xiL.get(x)){
+				disMax = distance;
+			}else{
+				disMax = xiL.get(x);
+			}
+			fx.add(x, -1 * (-1 + (Math.abs(xiL.get(x)-xrL.get(x))/(float)disMax)));			
+		}
+		
+		for (int x = 0; x < monsN; x++){
+			distance = dimY - yiL.get(x);
+			if (distance > yiL.get(x)){
+				disMax = distance;
+			}else{
+				disMax = yiL.get(x);
+			}
+			fy.add(x, -1 * (-1 + (Math.abs(yiL.get(x)-yrL.get(x))/(float)disMax)));			
+		}
+		
+		fxa = calculateAverage(fx);
+		fya = calculateAverage(fy);
+		
+
+				
+		return (fxa+fya)/2;
+	}
+	
+	public static Float calculateAverage(List<Float> marks) {
+		Float sum = (float) 0;
+		if(!marks.isEmpty()) {
+			for (Float mark : marks) {
+				sum += mark;
+			}
+			return (float) (sum.floatValue() / marks.size());
+		}
+		return sum;
+	}
     
     // Get optimum fitness
     static int getMaxFitness() {
@@ -145,7 +409,7 @@ public class FitnessCalc {
     
     public static int getMonstersOutPlaced( Individual chromosome ){
     	int monstersOut = 0;
-    	for( int i = 0; i < 20; i++ ){
+    	for( int i = 11; i < chromosome.elementsSize(); i++ ){
     		Element e = chromosome.getElement(i);
     		if( e instanceof Monster ){
     			//System.out.println(e.getX()+" - "+e.getY()+"	"+chromosome.checkInGraph( e.getX(), e.getY() ));
@@ -164,6 +428,7 @@ public class FitnessCalc {
     	boolean canRun = false;
     	
     	Room inicial = (Room) chromosome.getElement(0), terminal = (Room) chromosome.getElement( chromosome.elementsSize()-1 );
+    	
     	List<Integer> founds = new ArrayList<Integer>();
     	Queue< Pair<Byte> > q = new ArrayDeque<Pair<Byte>>();
     	HashMap<Pair<Byte>, Integer> seen = new HashMap<Pair<Byte>, Integer>();
@@ -190,7 +455,7 @@ public class FitnessCalc {
     		//Derecha
     		back = new Pair<Byte>( (byte)(actual.getX() + 1), actual.getY() );
     		//System.out.println( seen.get( back ) == null );
-    		if( actual.getX() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    		if( actual.getX() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
     			seen.put(back, 1);
     			q.add( back );
     		}
@@ -198,7 +463,7 @@ public class FitnessCalc {
     		//Abajo
     		back = new Pair<Byte>( actual.getX(), (byte)(actual.getY() + 1) );
     		//System.out.println( seen.get( back ) == null );
-    		if( actual.getY() + 1 <= 31 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
+    		if( actual.getY() + 1 <= 63 && seen.get( back ) == null && chromosome.checkInGraph( back.getX(), back.getY()) != 0 ){
     			seen.put(back, 1);
     			q.add( back );
     		}
