@@ -10,7 +10,7 @@ Here it's an example run of the algorithm:
 
 After 50 generations, the result it's something like this:
 
-![Resulting map]()
+![Resulting map](https://github.com/GeneticZeldaLevels/GeneticAlgorithm/blob/master/img/Screenshot%20from%202018-03-29%2019-02-30.png)
 
 In this example, the gray square it's the final room and the yellow one it's the first room, the little blue squares are enemies, the green squares are inner rooms and the red lines of squares are corridor that try to connect the rooms.
 
