@@ -9,8 +9,6 @@ public class Algorithm {
     private static final boolean elitism = false;
 
     /* Public methods */
-    
-    
     // Evolve a population
     public static Population evolvePopulation(Population pop) {
         Population newPopulation = new Population(pop.size(), false, true);

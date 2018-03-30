@@ -10,11 +10,11 @@ public class GA {
     	//Crea un individuo (cromosoma) aleatorio de 20 elementos 
     	FitnessCalc.setRadius(1);
     	FitnessCalc.setEnemyLimit(2);
-    	FitnessCalc.setHallwayProbability( (float) 0.65 );
+    	FitnessCalc.setHallwayProbability( (float) 0.82 );
     	FitnessCalc.setGraphQuantity( 24 );
     	FitnessCalc.setFitnessFunction(0);
     	FitnessCalc.setMapSize(64);
-    	FitnessCalc.generationLimit = 150;
+    	FitnessCalc.generationLimit = 50;
     	
     	Population factibles = new Population( 50, true, true );
     	Population infactibles = new Population( 50, true, true );
